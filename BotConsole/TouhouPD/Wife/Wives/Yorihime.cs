@@ -95,9 +95,15 @@ namespace BotConsole.TouhouPD.Wife.Wives
             int finalDmg = currentHp;
             if(gionsama)
             {
+                gionsama = !gionsama;
                 base.BeingAttack(attacker, damage / 2, type);
-                attacker.BeingAttack(this, damage / 2, type);
-                if(currentHp<=0)
+                int retdmg=attacker.BeingAttack(this, damage / 2, type);
+                if (amaterasu > 0)
+                {
+                    HpGet(retdmg * 3 / 10);
+                    MpGet(retdmg / 20);
+                }
+                if (currentHp<=0)
                 {
                     currentHp = 1;
                 }
