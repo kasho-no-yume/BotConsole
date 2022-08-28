@@ -1,0 +1,338 @@
+﻿using BotConsole.TouhouPD.Equipment;
+using BotConsole.TouhouPD.Gamer;
+using BotConsole.TouhouPD.Wife;
+using BotConsole.Util;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BotConsole.TouhouPD
+{
+    /// <summary>
+    /// 从该类计算老婆的战斗逻辑。
+    /// </summary>
+    internal class BattleRoom
+    {
+        GamePlayer initiator;
+        Participant receipent;
+        WifeBase one, two;
+        string group;
+        //吟唱中的技能序号，以及吟唱时间倍率。
+        Dictionary<WifeBase, int> skillCache = new Dictionary<WifeBase, int>();
+        Dictionary<WifeBase,double>speedRate=new Dictionary<WifeBase,double>();
+        public BattleRoom(GamePlayer initiator,Participant receipent)
+        {
+            this.receipent = receipent;
+            this.initiator = initiator;
+            one = initiator.wife;
+            two = receipent.wife;
+            group = initiator.user.group;
+        }
+        public void GameStart()
+        {          
+            one.AttributeInit();
+            two.AttributeInit();
+            if(initiator.weapon!=null)
+            {
+                initiator.weapon.Equipping(one);
+            }
+            if(receipent.weapon!=null)
+            {
+                receipent.weapon.Equipping(two);
+            }
+            new Sender().QuicklyReply(group, "战斗开始！由" + initiator.name + "对" + receipent.name + "发起的挑战！");
+            var thread = new Thread(GameLoop);
+            thread.Start();
+        }
+        private void GameLoop()
+        {
+            int fullProgress = one.currentSpeed * two.currentSpeed;
+            int progressOne=fullProgress,progressTwo=fullProgress;
+            skillCache[one] = 0;
+            skillCache[two] = 0;
+            speedRate[one] = 1;
+            speedRate[two] = 1;
+            while(one.currentHp>0&&two.currentHp>0)
+            {
+                progressOne -= (int)(one.currentSpeed / speedRate[one]);
+                progressTwo -= (int)(two.currentSpeed / speedRate[two]);
+                if(progressOne<=0)
+                {
+                    if(one.cantActRound<=0)
+                    {
+                        int selfinit = one.currentHp, oppo = two.currentHp;
+                        ProcessAct(one, two, initiator);
+                        selfinit = selfinit - one.currentHp;
+                        oppo = oppo - two.currentHp;
+                        new Sender().QuicklyReply(group, String.Format("这个回合，{0}受到了{1}伤害，敌方受到了" +
+                            "{2}伤害。", initiator.name, selfinit, oppo));
+                    }
+                    one.cantActRound--;
+                    progressOne += fullProgress;
+                }
+                if(one.currentHp <= 0 || two.currentHp <= 0)
+                {
+                    break;
+                }
+                if (progressTwo <= 0)
+                {
+                    if (two.cantActRound <= 0)
+                    {
+                        int selfinit = two.currentHp, oppo = one.currentHp;
+                        ProcessAct(two, one, receipent);
+                        selfinit = selfinit - two.currentHp;
+                        oppo = oppo - one.currentHp;
+                        new Sender().QuicklyReply(group, String.Format("这个回合，{0}受到了{1}伤害，敌方受到了" +
+                            "{2}伤害。", receipent.name, selfinit, oppo));
+                    }
+                    two.cantActRound--;
+                    progressTwo += fullProgress;
+                }
+            }
+            if (initiator.user != null)
+            {
+                PlayingQQ.PlayingOver(initiator.user.qq);
+            }
+            if(receipent.user!=null)
+            {
+                PlayingQQ.PlayingOver(receipent.user.qq);
+            }
+            if(one.currentHp <= 0 && two.currentHp <= 0)
+            {
+                new Sender().QuicklyReply(group, "千年奇观，竟然平局了。");
+                return;
+            }
+            User? winner=null;
+            Participant loser=receipent;
+            if(one.currentHp<=0)
+            {
+                new Sender().QuicklyReply(group, initiator.name + "输了。");
+                winner = receipent.user;
+                loser = initiator;
+            }
+            if(two.currentHp<=0)
+            {
+                new Sender().QuicklyReply(group,receipent.name+"输了。");
+                winner = initiator.user;
+                loser = receipent;
+            }
+            if(winner!=null)
+            {
+                string bounshint = "";
+                foreach(var i in loser.bouns)
+                {
+                    if(i.Key=="money")
+                    {
+                        winner.GetMoney(i.Value);
+                        bounshint += "你获得了" + i.Value + "円！\n";
+
+                    }
+                    if(i.Key=="exp")
+                    {
+                        winner.ExpConfront(i.Value);
+                        bounshint += "你获得了" + i.Value + "经验！\n";
+                    }
+                    if(i.Key=="equip")
+                    {
+                        winner.AddEquip(i.Value, 1);
+                        bounshint += "你获得了装备" + EquipFactory.GenerateEquip(i.Value, 1, 0).name + "！\n";
+                    }
+                }
+                if(bounshint.Length!=0)
+                {
+                    new Sender().QuicklyReply(group, bounshint);
+                }
+            }
+        }
+        private void ProcessAct(WifeBase self,WifeBase opponent,Participant part)
+        {            
+            bool ok = false;
+            self.RoundStart(opponent);
+            if (skillCache[self]!=0)
+            {
+                int damage = 0;
+                if(self.silent>0)
+                {
+                    new Sender().QuicklyReply(group, "因为被沉默，所以"+initiator.name+"吟唱的技能没有发动。");
+                    skillCache[self] = 0;
+                    speedRate[self] = 1;
+                    return;
+                }
+                switch(skillCache[self])
+                {
+                    case 1: damage = self.SkillOne(opponent); break;
+                    case 2: damage = self.SkillTwo(opponent); break;
+                    case 3: damage = self.SkillThree(opponent); break;
+                }
+                var res = part.name + "吟唱的技能" + skillCache[self] + "成功发动！\n";
+                res += damage != 0 ? "造成" + damage + "伤害！" : "";
+                new Sender().QuicklyReply(initiator.user.group, res);
+                skillCache[self] = 0;
+                speedRate[self] = 1;               
+                return;
+            }
+            string hint = "现在轮到" + part.name + "行动\n";
+            hint += "【己方老婆】" + self.name+" lv."+self.level+'\n';
+            hint += String.Format("生命：{0}/{7}\n法力值：{1}/{8}\n攻击力：{2}\n" +
+                "法强：{3}\n速度：{4}\n防御力：{5}\n" +"法术防御：{6}\n"
+                ,self.currentHp,self.currentMp,self.currentAttack,self.currentMagic,
+                self.currentSpeed,self.currentDefend,self.currentMdefend,self.maxHpFinal,self.maxMpFinal);
+            hint += "【敌方老婆】" + opponent.name + " lv."+opponent.level+'\n';
+            hint += String.Format("生命：{0}/{7}\n法力值：{1}/{8}\n攻击力：{2}\n法强：{3}" +
+                "\n速度：{4}\n防御力：{5}\n" +"法术防御：{6}\n"
+                , opponent.currentHp, opponent.currentMp, opponent.currentAttack,
+                opponent.currentMagic,opponent.currentSpeed, opponent.currentDefend, opponent.currentMdefend,
+                opponent.maxHpFinal,opponent.maxMpFinal);
+            hint += "——选择你的操作——\n";
+            hint += "[攻击]攻击敌方\n[防御]进行防御\n[查看技能]忘记技能效果了？\n[技能123]释放对应技能\n" +
+                "[详细]查看双方详细属性\n[状态]查看敌我buff\n[认输]你就是个loser";
+            var m = new ForwardMsg(self.name, initiator.name, hint);
+            new Sender().QuicklySendForward(group, m);
+            while (!ok)
+            {
+                switch (part.RequireAct())
+                {
+                    case "attack":
+                        if (self.CanUseSkill(0))
+                        {
+                            int dmg = self.Attack(opponent);
+                            new Sender().QuicklyReply(group,part.name+"攻击敌方！造成了"+dmg+"伤害。");
+                            ok = true;
+                        }
+                        break;
+                    case "skill":
+                            string res = "";
+                            for(int i=0;i<4;i++)
+                            {
+                                res += "【"+self.skillTitle[i] + "】:" + self.skillDescription[i] + "\n";
+                            }
+                            new Sender().QuicklyReply(initiator.user.group, res);
+                        break;
+                    case "skill1":
+                        if(self.CanUseSkill(1))
+                        {
+                            if(self.GetChantOne()==0)
+                            {
+                                int dmg=self.SkillOne(opponent);
+                                new Sender().QuicklyReply(group, part.name+"释放技能1！造成了" + dmg + "伤害。");
+                            }
+                            else
+                            {
+                                skillCache[self] = 1;
+                                speedRate[self] = self.GetChantOne();
+                                new Sender().QuicklyReply(group, part.name + "开始吟唱技能1");
+                            }
+                            ok = true;
+                        }
+                        else
+                        {
+                            new Sender().QuicklyReply(initiator.user.group, "目前不能使用该技能。");
+                        }
+                        break;
+                    case "skill2":
+                        if (self.CanUseSkill(2))
+                        {
+                            if (self.GetChantTwo() == 0)
+                            {
+                                int dmg=self.SkillTwo(opponent);
+                                new Sender().QuicklyReply(group, part.name + "释放技能2！造成了" + dmg + "伤害。");
+                            }
+                            else
+                            {
+                                skillCache[self] = 2;
+                                speedRate[self] = self.GetChantTwo();
+                                new Sender().QuicklyReply(group, part.name + "开始吟唱技能2");
+                            }
+                            ok = true;
+                        }
+                        else
+                        {
+                            new Sender().QuicklyReply(initiator.user.group, "目前不能使用该技能。");
+                        }
+                        break;
+                    case "skill3":
+                        if (self.CanUseSkill(3))
+                        {
+                            if (self.GetChantThree() == 0)
+                            {
+                                int dmg=self.SkillThree(opponent);
+                                new Sender().QuicklyReply(group, part.name + "释放技能3！造成了" + dmg + "伤害。");
+                            }
+                            else
+                            {
+                                skillCache[self] = 3;
+                                speedRate[self] = self.GetChantThree();
+                                new Sender().QuicklyReply(group, part.name + "开始吟唱技能3");
+                            }
+                            ok = true;
+                        }
+                        else
+                        {
+                            new Sender().QuicklyReply(initiator.user.group, "目前不能使用该技能。");
+                        }
+                        break;
+                    case "defend":
+                        self.Defend();
+                        ok = true;
+                        new Sender().QuicklyReply(group,part.name+"选择了防御。");
+                        break;
+                    case "state":
+                        string resstr = "【己方状态】\n";
+                        resstr += self.silent > 0 ? "沉默剩余" + self.silent+'\n' : "";
+                        resstr += self.invincible > 0 ? "无敌剩余" + self.invincible + '\n' : "";
+                        resstr += self.disarm > 0 ? "缴械剩余" + self.disarm + '\n' : "";
+                        foreach(var i in self.buffList)
+                        {
+                            resstr+=i.name+i.strength + "持续时间："+i.sustainRound+'\n';
+                        }
+                        resstr += "【敌方状态】\n";
+                        resstr += opponent.silent > 0 ? "沉默剩余" + opponent.silent + '\n' : "";
+                        resstr += opponent.invincible > 0 ? "无敌剩余" + opponent.invincible + '\n' : "";
+                        resstr += opponent.disarm > 0 ? "缴械剩余" + opponent.disarm + '\n' : "";
+                        resstr += opponent.cantActRound > 0 ? "不能移动剩余" + opponent.cantActRound + '\n' : "";
+                        foreach (var i in opponent.buffList)
+                        {
+                            resstr += i.name + i.strength + "持续时间：" + i.sustainRound + '\n';
+                        }
+                        new Sender().QuicklyReply(group, resstr);
+                        break;
+                    case "detail":
+                        string detail = "";
+                        detail += "【己方老婆】" + self.name + " lv." + self.level + '\n';
+                        detail += String.Format("生命：{0}/{7}\n法力值：{1}/{8}\n攻击力：{2}\n" +
+                            "法强：{3}\n速度：{4}\n防御力：{5}\n" + "法术防御：{6}\n暴击率：{9}\n暴击伤害{10}%\n" +
+                            "闪避率：{11}\n物理穿透：{12}\n物理穿透率：{13}\n法术穿透：{14}\n法术穿透率：{15}"
+                            , self.currentHp, self.currentMp, self.currentAttack, self.currentMagic,
+                            self.currentSpeed, self.currentDefend, self.currentMdefend, self.maxHpFinal
+                            , self.maxMpFinal,self.criticalFinal,self.criticalDamage,self.currentMissrate,
+                            self.attackPierce,self.attackPierceRate,self.magicPierce,self.magicPierceRate);
+                        detail += "【敌方老婆】" + opponent.name + " lv." + opponent.level + '\n';
+                        detail += String.Format("生命：{0}/{7}\n法力值：{1}/{8}\n攻击力：{2}\n法强：{3}" +
+                            "\n速度：{4}\n防御力：{5}\n" + "法术防御：{6}\n暴击率：{9}\n暴击伤害{10}%\n" +
+                            "闪避率：{11}\n物理穿透：{12}\n物理穿透率：{13}\n法术穿透：{14}\n法术穿透率：{15}"
+                            , opponent.currentHp, opponent.currentMp, opponent.currentAttack,
+                            opponent.currentMagic, opponent.currentSpeed, opponent.currentDefend, opponent.currentMdefend,
+                            opponent.maxHpFinal, opponent.maxMpFinal,opponent.criticalFinal,
+                            opponent.criticalDamage, opponent.currentMissrate,
+                            opponent.attackPierce, opponent.attackPierceRate, opponent.magicPierce, opponent.magicPierceRate);
+                        ForwardMsg forwardMsg = new ForwardMsg(part.name, initiator.user.qq, detail);
+                        new Sender().QuicklySendForward(group, forwardMsg);
+                        break;
+                    case "surrender":
+                        ok=true;
+                        new Sender().QuicklyReply(group,part.name+"家里的柜子动了，所以先溜了。绝对不是因为打不过才" +
+                            "投降的。");
+                        self.currentHp = 0;
+                        break;
+                    case "overtime":
+                        ok = true;
+                        new Sender().QuicklyReply(group,part.name+"超时了，思考虽好，可不要太久哦。");
+                        self.currentHp = 0;
+                        break;
+                }
+            }
+        }
+    }
+}
