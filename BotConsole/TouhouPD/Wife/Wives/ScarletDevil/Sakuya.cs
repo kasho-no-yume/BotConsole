@@ -32,7 +32,11 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             skillDescription[3] = "消耗90mp，吟唱1x。冻结时间，只有咲夜能够自由行动。敌方停止行动2回合" +
                 "，不会打断敌方的吟唱。一场战斗只能使用一次。";
         }
-
+        public override string GetState()
+        {
+            string str = usedSekai ? "已使用幻世世界\n" : "";
+            return str+base.GetState();
+        }
         public override bool CanUseOne()
         {
             return currentMp>=10;

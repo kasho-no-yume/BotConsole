@@ -42,7 +42,14 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             skillTitle[1] = "之后就没有人了吗";
             skillDescription[1] = "消耗30mp，吟唱0。下一次伤害必定暴击。";
         }
-
+        public override string GetState()
+        {
+            string res = twoCold>0?"二技能冷却"+twoCold+'\n':"";
+            res+= threeCold > 0 ? "三技能冷却" + threeCold + '\n' : "";
+            res += mustCritical ? "必暴击\n" : "";
+            res += fourExist ? "四重存在\n" : "";
+            return res+base.GetState();
+        }
         public override bool CanUseOne()
         {
             return currentMp>=30;

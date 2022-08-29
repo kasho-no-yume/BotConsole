@@ -188,5 +188,11 @@ namespace BotConsole.TouhouPD.Wife.Wives
             }
             return false;
         }
+        public override string GetState()
+        {
+            string res = darknessMoon ? "月之暗面\n" : "";
+            res = base.GetState();
+            return res;
+        }
     }
 }

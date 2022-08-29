@@ -64,10 +64,10 @@ namespace BotConsole.TouhouPD
                     {
                         int selfinit = one.currentHp, oppo = two.currentHp;
                         ProcessAct(one, two, initiator);
-                        selfinit = selfinit - one.currentHp;
+                        /*selfinit = selfinit - one.currentHp;
                         oppo = oppo - two.currentHp;
                         new Sender().QuicklyReply(group, String.Format("这个回合，{0}受到了{1}伤害，敌方受到了" +
-                            "{2}伤害。", initiator.name, selfinit, oppo));
+                            "{2}伤害。", initiator.name, selfinit, oppo));*/
                     }
                     one.cantActRound--;
                     progressOne += fullProgress;
@@ -82,10 +82,10 @@ namespace BotConsole.TouhouPD
                     {
                         int selfinit = two.currentHp, oppo = one.currentHp;
                         ProcessAct(two, one, receipent);
-                        selfinit = selfinit - two.currentHp;
+                        /*selfinit = selfinit - two.currentHp;
                         oppo = oppo - one.currentHp;
                         new Sender().QuicklyReply(group, String.Format("这个回合，{0}受到了{1}伤害，敌方受到了" +
-                            "{2}伤害。", receipent.name, selfinit, oppo));
+                            "{2}伤害。", receipent.name, selfinit, oppo));*/
                     }
                     two.cantActRound--;
                     progressTwo += fullProgress;
@@ -149,7 +149,11 @@ namespace BotConsole.TouhouPD
         private void ProcessAct(WifeBase self,WifeBase opponent,Participant part)
         {            
             bool ok = false;
+            self.OnHpReduce += HpReduceListener;
+            opponent.OnHpReduce += HpReduceListener;
             self.RoundStart(opponent);
+            opponent.OnHpReduce -= HpReduceListener;
+            self.OnHpReduce -= HpReduceListener;
             if (skillCache[self]!=0)
             {
                 int damage = 0;
@@ -168,7 +172,7 @@ namespace BotConsole.TouhouPD
                 }
                 var res = part.name + "吟唱的技能" + skillCache[self] + "成功发动！\n";
                 res += damage != 0 ? "造成" + damage + "伤害！" : "";
-                new Sender().QuicklyReply(initiator.user.group, res);
+                new Sender().QuicklyReply(group, res);
                 skillCache[self] = 0;
                 speedRate[self] = 1;               
                 return;
@@ -280,22 +284,9 @@ namespace BotConsole.TouhouPD
                         break;
                     case "state":
                         string resstr = "【己方状态】\n";
-                        resstr += self.silent > 0 ? "沉默剩余" + self.silent+'\n' : "";
-                        resstr += self.invincible > 0 ? "无敌剩余" + self.invincible + '\n' : "";
-                        resstr += self.disarm > 0 ? "缴械剩余" + self.disarm + '\n' : "";
-                        foreach(var i in self.buffList)
-                        {
-                            resstr+=i.name+i.strength + "持续时间："+i.sustainRound+'\n';
-                        }
+                        resstr += self.GetState();
                         resstr += "【敌方状态】\n";
-                        resstr += opponent.silent > 0 ? "沉默剩余" + opponent.silent + '\n' : "";
-                        resstr += opponent.invincible > 0 ? "无敌剩余" + opponent.invincible + '\n' : "";
-                        resstr += opponent.disarm > 0 ? "缴械剩余" + opponent.disarm + '\n' : "";
-                        resstr += opponent.cantActRound > 0 ? "不能移动剩余" + opponent.cantActRound + '\n' : "";
-                        foreach (var i in opponent.buffList)
-                        {
-                            resstr += i.name + i.strength + "持续时间：" + i.sustainRound + '\n';
-                        }
+                        resstr += opponent.GetState();
                         new Sender().QuicklyReply(group, resstr);
                         break;
                     case "detail":
@@ -333,6 +324,10 @@ namespace BotConsole.TouhouPD
                         break;
                 }
             }
+        }
+        private void HpReduceListener(WifeBase wife,int amount)
+        {
+            new Sender().QuicklyReply(group, wife.name + "生命值损失了" + amount);
         }
     }
 }

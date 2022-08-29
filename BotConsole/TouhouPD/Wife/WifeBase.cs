@@ -66,20 +66,26 @@ namespace BotConsole.TouhouPD.Wife
             physical,magic,truth
         }
 
-        public delegate void wifeEvent(WifeBase self,WifeBase? opponent);
-        public wifeEvent BeingAttackEvent;
-        public wifeEvent OnAttackEvent;
-        public wifeEvent OnSkillEvent;
-        public wifeEvent OnDeathingEvent;
-        public wifeEvent OnRoundStartEvent;
-        public delegate void buffEvent(BuffBase buff);
-        public buffEvent OnBuffAdded;
-        public buffEvent OnBuffRemoved;
+        public delegate void WifeEvent(WifeBase self,WifeBase? opponent);
+        public WifeEvent BeingAttackEvent;
+        public WifeEvent OnAttackEvent;
+        public WifeEvent OnSkillEvent;
+        public WifeEvent OnDeathingEvent;
+        public WifeEvent OnRoundStartEvent;
+        public delegate void DmgEvent(WifeBase self, int amount);
+        public DmgEvent OnHpReduce;
+        public delegate void BuffEvent(BuffBase buff);
+        public BuffEvent OnBuffAdded;
+        public BuffEvent OnBuffRemoved;
         private void NullEvent(WifeBase self, WifeBase? opponent)
         {
 
         }
         private void NullEvent(BuffBase buff)
+        {
+
+        }
+        private void NullEvent(WifeBase self,int amount)
         {
 
         }
@@ -190,6 +196,7 @@ namespace BotConsole.TouhouPD.Wife
             OnRoundStartEvent += NullEvent;
             OnBuffAdded += NullEvent;
             OnBuffRemoved += NullEvent;
+            OnHpReduce += NullEvent;
     }
         /// <summary>
         /// 回合开始时的处理，包括buff效果结算，防御状态移除，回合开始委托事件。
@@ -348,6 +355,7 @@ namespace BotConsole.TouhouPD.Wife
         /// <param name="amount"></param>
         public virtual void HpReduce(int amount)
         {
+            OnHpReduce(this, amount);
             if(invincible>0)
             {
                 return;
@@ -449,6 +457,19 @@ namespace BotConsole.TouhouPD.Wife
                     return CanUseThree();
             }
             return false;
+        }
+        public virtual string GetState()
+        {
+            string resstr = "";
+            resstr += silent > 0 ? "沉默剩余" + silent + '\n' : "";
+            resstr += invincible > 0 ? "无敌剩余" + invincible + '\n' : "";
+            resstr += disarm > 0 ? "缴械剩余" + disarm + '\n' : "";
+            resstr += cantActRound > 0 ? "不能行动剩余" + cantActRound + '\n' : "";
+            foreach (var i in buffList)
+            {
+                resstr += i.name + i.strength + "持续时间：" + i.sustainRound + '\n';
+            }
+            return resstr;
         }
     }
 }

@@ -76,8 +76,8 @@ namespace BotConsole.TouhouPD
                     PlayingQQ.Playing(user.qq);
                     var gamer = new GamePlayer(user);
                     var wife = WifeFactory.GenerateWife(1009,levelres);
-                    var equip = EquipFactory.GenerateEquip(3, 1, 0);
-                    var bot = new GameBot("测试用机器人", wife, equip, new FlanWeaponStra(wife));
+                    //var equip = EquipFactory.GenerateEquip(3, 1, 0);
+                    var bot = new GameBot("测试用机器人", wife, null, new FlanWeaponStra(wife));
                     new BattleRoom(gamer, bot).GameStart();
                 }
                 if (para[1].Contains("挑战"))

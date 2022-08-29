@@ -39,7 +39,12 @@ namespace BotConsole.TouhouPD.Wife.Wives.CherryBlossom
             skillDescription[3] = "消耗60mp，吟唱0。召唤出蓬莱人偶，对敌方造成1倍法术强度的法术伤害。若自身每" +
                 "存在一个人偶，每一个将会额外提高1倍的法术强度伤害。释放后会清除自己的人偶。";
         }
-
+        public override string GetState()
+        {
+            string res = oneCool > 0 ? "一技能冷却" + oneCool + '\n' : "";
+            res += twoCool > 0 ? "二技能冷却" + twoCool + '\n' : "";
+            return res+base.GetState();
+        }
         public override bool CanUseOne()
         {
             return currentMp>=30&&oneCool<=0;

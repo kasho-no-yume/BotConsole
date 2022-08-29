@@ -13,12 +13,18 @@ namespace BotConsole
             string para = "";
             foreach(var i in dic)
             {
-                para += (','+i.Key+'='+i.Value);
-            }
-            para=para.Replace("&", "&amp;");
-            para=para.Replace("[", "&#91;");
-            para=para.Replace("]", "&#93;");
-            para=para.Replace(",", "&#44;");
+                string key=i.Key,value=i.Value;
+                key = key.Replace("&", "&amp;");
+                key = key.Replace("[", "&#91;");
+                key = key.Replace("]", "&#93;");
+                key = key.Replace(",", "&#44;");
+                value = value.Replace("&", "&amp;");
+                value = value.Replace("[", "&#91;");
+                value = value.Replace("]", "&#93;");
+                value = value.Replace(",", "&#44;");
+                para += (','+key+'='+value);
+
+            }            
             //para.Remove(para.Length-1,1);
             string res = string.Format("[CQ:{0}{1}]",type,para);
             return res;

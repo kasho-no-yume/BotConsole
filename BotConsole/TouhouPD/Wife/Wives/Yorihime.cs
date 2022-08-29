@@ -39,7 +39,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
             maxHpBase = 300;
             maxMpBase = 20;
             attackBase = 35;
-            attackAddition = 2;
+            attackAddition = 3;
             magicAddition = 2;
             speedBase = 8;
             speedAddition = 2;
@@ -61,11 +61,25 @@ namespace BotConsole.TouhouPD.Wife.Wives
                 "且不会因为该次伤害死亡（最多被扣至1血），返还敌方另外50%该伤害。" +
                 "/四回合内，回复造成伤害的30%生命值和造成伤害5%的mp。该技能的秽神和崇神各有5回合冷却。";
             skillTitle[3] = "天津瓮星/金山彦命";
-            skillDescription[3] = "消耗20%hp/mp，吟唱0。基于敌我双方法强总和，每回合对敌方造成总值20%的法术伤害" +
-                "/基于敌我双方攻击力总和，每回合对敌方造成总值20%的物理伤害。此技能重复触发会叠加。" +
+            skillDescription[3] = "消耗20%hp/mp，吟唱0。基于敌我双方法强总和，每回合对敌方造成总值40%的法术伤害" +
+                "/基于敌我双方攻击力总和，每回合对敌方造成总值40%的物理伤害。此技能重复触发会叠加。" +
                 "该技能的秽神和崇神各有5回合冷却。";
         }
-
+        public override string GetState()
+        {
+            string res = "";
+            res += filthyGod ? "秽神\n" : "崇神\n";
+            res += gionsama ? "祇园神\n" : "";
+            res += izunome > 0 ? "伊豆能卖持续回合" + izunome + '\n' : "";
+            res += amaterasu > 0 ? "天照大神持续回合" + amaterasu + '\n' : "";
+            res += gionsamaCold > 0 ? "祇园之神冷却时间" + gionsamaCold + '\n' : "";
+            res += kanayamahiCold > 0 ? "金山彦命冷却时间" + kanayamahiCold + '\n' : "";
+            res += amatsumiCold > 0 ? "天津瓮星冷却时间" + amatsumiCold + '\n' : "";
+            res += amaterasuCold > 0 ? "天照大神冷却时间" + amaterasuCold + '\n' : "";
+            res += amatsumi > 0 ? "天津瓮星伤害" + amatsumi + '\n' : "";
+            res += kanayamahi > 0 ? "金山彦命伤害" + kanayamahi + '\n' : "";
+            return res+base.GetState();
+        }
         public override void HpReduce(int amount)
         {
             amount -= currentMp;
@@ -153,6 +167,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         {
             base.RoundStart(enemy);
             izunome--;
+            amaterasu--;
             Kanayamahi(enemy);
             Amatsumi(enemy);
             amaterasuCold--;
@@ -161,19 +176,19 @@ namespace BotConsole.TouhouPD.Wife.Wives
             amatsumiCold--;
         }
         private void Amatsumi(WifeBase enemy)
-        {
-            int dmg=enemy.BeingAttack(this, amatsumi, DamageType.magic);
-            if(amaterasu>0)
+        {            
+            if(amatsumi>0)
             {
+                int dmg = enemy.BeingAttack(this, amatsumi, DamageType.magic);
                 HpGet(dmg * 3 / 10);
                 MpGet(dmg / 20);
             }
         }
         private void Kanayamahi(WifeBase enemy)
-        {
-            int dmg=enemy.BeingAttack(this, kanayamahi, DamageType.physical);
-            if (amaterasu > 0)
+        {           
+            if (kanayamahi > 0)
             {
+                int dmg = enemy.BeingAttack(this, kanayamahi, DamageType.physical);
                 HpGet(dmg * 3 / 10);
                 MpGet(dmg / 20);
             }
@@ -240,14 +255,14 @@ namespace BotConsole.TouhouPD.Wife.Wives
                 amatsumiCold = 5;
                 currentHp -= maxHpFinal / 5;
                 filthyGod = !filthyGod;
-                amatsumi += (currentAttack + target.currentAttack) * 3 / 10;
+                amatsumi += (currentAttack + target.currentAttack) * 2/5;
             }
             else if (!filthyGod && currentMp >= maxMpFinal / 5 && kanayamahiCold <= 0)
             {
                 filthyGod = !filthyGod;
                 kanayamahiCold = 5;
                 MpReduce(maxMpFinal / 5);
-                kanayamahi += (currentMagic + target.currentMagic) * 3 / 10;
+                kanayamahi += (currentMagic + target.currentMagic) * 2/5;
             }
             else
             {

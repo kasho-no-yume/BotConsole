@@ -24,7 +24,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             skillTitle[0] = "霄暗的妖精";
             skillDescription[0] = "露米娅致力于把自己保持黑暗，让敌方看不见自己。自身闪避率提高10。";
             skillTitle[1] = "月亮光";
-            skillDescription[1] = "消耗60mp，吟唱1x。增加‘月亮光’效果提高自身40闪避率，持续3回合。" +
+            skillDescription[1] = "消耗60mp，吟唱1x。增加‘月亮光’buff效果提高自身40闪避率，持续3回合。" +
                 "重复使用刷新持续回合。";
             skillTitle[2] = "夜雀";
             skillDescription[2] = "消耗20mp，吟唱0.5x。造成1倍攻击力的物理伤害，额外提高闪避率比例的伤害。";

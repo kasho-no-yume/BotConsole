@@ -38,7 +38,11 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             skillDescription[3] = "消耗50%hp，吟唱1x。造成2.5倍攻击力的伤害，额外提高已损失生命值比例" +
                 "2倍的伤害。";
         }
-
+        public override string GetState()
+        {
+            string res = fantasy ? "吸血鬼幻想\n" : "";
+            return res+base.GetState();
+        }
         public override bool CanUseOne()
         {
             return currentMp>=30;
@@ -106,8 +110,8 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             }
             currentHp -= maxHpFinal / 2;
             base.SkillThree(target);
-            int damage = currentAttack * 5 / 2;
-            double rate = (1-(currentHp  / maxHpFinal ))*2+1;
+            int damage = currentAttack;
+            double rate = (1-(currentHp  / maxHpFinal ))*2+2.5;
             damage = (int)(damage * rate);
             int finalDmg = target.BeingAttack(this, damage, DamageType.physical);
             HpGet(finalDmg / 5);

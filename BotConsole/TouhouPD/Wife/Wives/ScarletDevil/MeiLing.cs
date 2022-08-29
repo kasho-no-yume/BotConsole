@@ -25,6 +25,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             hpAddition = 16;
             attackPierce = 20;
             defendBase = 60;
+            attackAddition = 2;
             description = "虽说是红魔馆的守门人，长得非常像人类但其实还是妖怪。比起绚烂的弹幕，" +
                 "似乎更中意使用武术战斗。";
             skillTitle[0] = "红海皇";
@@ -39,7 +40,13 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
                 "总量的物理攻击返还给对手。冷却5回合。";
             skillTitle[3] = "虹色太极拳";
         }
-
+        public override string GetState()
+        {
+            string res = coldRound > 0 ? "大招冷却" + coldRound + '\n' : "";
+            res += immuneRound > 0 ? "虹色太极拳持续" + immuneRound + '\n' : "";
+            res += totalDmg > 0 ? "目前总缓存伤害" + totalDmg + '\n' : "";
+            return res+base.GetState();
+        }
         public override bool CanUseOne()
         {
             return true;
