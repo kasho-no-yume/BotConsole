@@ -93,15 +93,15 @@ namespace BotConsole.TouhouPD
                     {
                         return;
                     }
-                    if (!int.TryParse(para[2], out int selflevel))
+                    if (!int.TryParse(para[3], out int selflevel))
                     {
                         return;
                     }
-                    if (!int.TryParse(para[2], out int oppoid))
+                    if (!int.TryParse(para[4], out int oppoid))
                     {
                         return;
                     }
-                    if (!int.TryParse(para[2], out int oppolevel))
+                    if (!int.TryParse(para[5], out int oppolevel))
                     {
                         return;
                     }
