@@ -41,6 +41,9 @@ namespace BotConsole.TouhouPD
                 res += "新手教程 （首通送随机sr装备！）\n";
                 res += "**挑战[1~10的数字] 消耗体力送大量资源！(**是金币，经验，装备3个中的一个)\n";
                 res += "test[1~100的数字] 战斗测试，不耗体力。数字是机器人等级。\n";
+                res += "custom [己方老婆id] [己方老婆等级] [敌方老婆id] [敌方老婆等级]" +
+                    " 自定义测试，至少要有4个老婆参数。" +
+                    "人机只会普攻。主要是用来测试自己用的老婆的。";
                 res += "输入【清除异变 标题】消耗一点体力进行挑战！体力在每次签到后会回复到3点。\n";
                 res += "例：【清除异变 每日挑战10】，奖励10倍，但会面对基数10倍等级的强力黑幕！\n";
                 res += "你当前有" + user.power + "点体力。";
@@ -76,8 +79,46 @@ namespace BotConsole.TouhouPD
                     PlayingQQ.Playing(user.qq);
                     var gamer = new GamePlayer(user);
                     var wife = WifeFactory.GenerateWife(1009,levelres);
-                    //var equip = EquipFactory.GenerateEquip(3, 1, 0);
-                    var bot = new GameBot("测试用机器人", wife, null, new FlanWeaponStra(wife));
+                    var equip = EquipFactory.GenerateEquip(3, 5, 0);
+                    var bot = new GameBot("测试用机器人", wife, equip, new FlanWeaponStra(wife));
+                    new BattleRoom(gamer, bot).GameStart();
+                }
+                if (para[1].Equals("custom"))
+                {
+                    if(para.Length<6)
+                    {
+                        return;
+                    }
+                    if (!int.TryParse(para[2],out int selfid))
+                    {
+                        return;
+                    }
+                    if (!int.TryParse(para[2], out int selflevel))
+                    {
+                        return;
+                    }
+                    if (!int.TryParse(para[2], out int oppoid))
+                    {
+                        return;
+                    }
+                    if (!int.TryParse(para[2], out int oppolevel))
+                    {
+                        return;
+                    }
+                    var self = WifeFactory.GenerateWife(selfid, selflevel);
+                    var oppo = WifeFactory.GenerateWife(oppoid, oppolevel);
+                    if(self==null||oppo==null)
+                    {
+                        return;
+                    }
+                    /*if(para.Length>=7)
+                    {
+
+                    }*/
+                    var gamer = new GamePlayer(user);
+                    gamer.wife = self;
+                    gamer.weapon = null;
+                    var bot = new GameBot("自定义机器人", oppo, null, null);
                     new BattleRoom(gamer, bot).GameStart();
                 }
                 if (para[1].Contains("挑战"))

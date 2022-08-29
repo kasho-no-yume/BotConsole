@@ -68,6 +68,10 @@ namespace BotConsole.TouhouPD.Equipment
             if (Rare.ContainsKey(sid)) temp = Rare;
             if (SRare.ContainsKey(sid)) temp = SRare;
             if (SSRare.ContainsKey(sid)) temp = SSRare;
+            if(level <= 0||level>=6)
+            {
+                return res;
+            }
             if(temp != null)
             {
                 temp.TryGetValue(sid, out var type);

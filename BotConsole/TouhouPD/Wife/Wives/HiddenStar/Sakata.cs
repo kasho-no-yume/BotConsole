@@ -19,7 +19,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
             description = "存在于大人口中的山姥，只要在山中走丢就会被山姥给吃掉。但实际上其本人温和的多，也不会" +
                 "像传说中那样被秘密处理掉。相反，还会以某种形式被保护起来。";
             skillTitle[0] = "深山的山姥";
-            skillDescription[0] = "居住深山，缺乏情报。遇到强者的时候总想套近乎，受到的所有伤害-10%。";
+            skillDescription[0] = "居住深山，缺乏情报。遇到强者的时候总想套近乎，受到的所有伤害-20%。";
             skillTitle[1] = "诅咒之雨";
             skillDescription[1] = "消耗30mp，吟唱0。谋杀前的秋雨，消磨了敌方战斗的意志，使敌方攻击力和法术强度" +
                 "-5。持续3回合，重复触发叠加效果但不刷新持续时间。";
@@ -54,7 +54,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
         }
         public override int BeingAttack(WifeBase attacker, int damage, DamageType type)
         {
-            damage = damage * 9 / 10;
+            damage = damage * 8 / 10;
             return base.BeingAttack(attacker, damage, type);
         }
         public override int SkillOne(WifeBase target)

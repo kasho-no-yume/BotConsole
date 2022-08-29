@@ -46,7 +46,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
             defendAddition = 2;
             mdefendAddition = 2;
             hpAddition = 17;
-            mpAddition = 2;
+            mpAddition = 1;
             description = "月之暗面的月人。曾经在完全碾压的情况下完胜以红魔馆馆主为首的月球异变团伙。其实力，就" +
                 "连幻想乡的大贤者都无法与之正面对抗。";
             skillTitle[0] = "神灵凭依的天上人";

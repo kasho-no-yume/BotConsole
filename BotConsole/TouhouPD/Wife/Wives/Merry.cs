@@ -19,7 +19,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
             id = 0;
             name = "梅莉";
             maxHpBase = 20;
-            maxMpBase = 400;
+            maxMpBase = 200;
             attackBase = 1;
             magicBase = 30;
             speedBase = 25;
@@ -27,7 +27,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
             mdefendBase = 35;
             missrateBase = 0;
             hpAddition = 1;
-            mpAddition = 21;
+            mpAddition = 20;
             attackAddition = 0;
             magicAddition = 3;
             speedAddition = 1;
