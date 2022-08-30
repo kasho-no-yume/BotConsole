@@ -18,6 +18,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             description = "自恃最强的妖精。拥有着与其实力相符的智力。不过凭借其妖精的身份，却也击败过" +
                 "拿出全部实力的秘神？说不定最强并不是吹牛呢。";
             id = 1002;
+            speedAddition = 2;
             skillTitle[0] = "湖上冰精";
             skillDescription[0] = "琪露诺总是散发着寒气，受到伤害减少20%。对琪露诺造成伤害时会受到寒气影响，使攻击者" +
                 "降低一点速度。此外，琪露诺的普通攻击也能使敌方降低一点速度。";

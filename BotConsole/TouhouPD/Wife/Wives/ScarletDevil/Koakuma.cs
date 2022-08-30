@@ -17,6 +17,10 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             imgUrl = "https://i.postimg.cc/c4bRWjRd/4A.png";
             name = "小恶魔";
             id = 1005;
+            maxHpBase = 350;
+            hpAddition = 15;
+            defendAddition = 3;
+            mdefendAddition = 3;
             description = "红魔馆里到处都是小恶魔，扮演着不听话的女仆角色，但长得看起来不像女仆就是了。" +
                 "虽说是恶魔，但是因为实力很弱，才有小恶魔之名吧。";
             skillTitle[0] = "恶魔女仆";

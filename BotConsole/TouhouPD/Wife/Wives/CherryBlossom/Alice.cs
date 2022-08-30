@@ -30,14 +30,14 @@ namespace BotConsole.TouhouPD.Wife.Wives.CherryBlossom
             skillTitle[0] = "七色的人偶师";
             skillDescription[0] = "在使用普通攻击的时候，会使在场人偶再攻击一次。";
             skillTitle[1] = "奥尔良人偶";
-            skillDescription[1] = "消耗30mp，吟唱0。召唤出奥尔良人偶（以正面buff形式存在），持续3回合，冷却3回合。" +
-                "每次回合开始时自动以0.8倍法术强度的魔法伤害攻击敌方。回复造成伤害30%的血量。";
+            skillDescription[1] = "消耗30mp，吟唱0。召唤出奥尔良人偶（以正面buff形式存在），持续5回合，冷却4回合。" +
+                "每次回合开始时自动以1.2倍法术强度的魔法伤害攻击敌方。回复造成伤害30%的血量。";
             skillTitle[2] = "上海人偶";
-            skillDescription[2] = "消耗30mp，吟唱0。召唤出上海人偶（以正面buff形式存在），持续3回合，冷却3回合。" +
-                "每次回合开始时自动以0.8倍法术强度的魔法伤害攻击敌方，并减少敌方8点法术防御。";
+            skillDescription[2] = "消耗30mp，吟唱0。召唤出上海人偶（以正面buff形式存在），持续5回合，冷却4回合。" +
+                "每次回合开始时自动以1.2倍法术强度的魔法伤害攻击敌方，并减少敌方8点法术防御。";
             skillTitle[3] = "蓬莱人偶";
-            skillDescription[3] = "消耗60mp，吟唱0。召唤出蓬莱人偶，对敌方造成1倍法术强度的法术伤害。若自身每" +
-                "存在一个人偶，每一个将会额外提高1倍的法术强度伤害。释放后会清除自己的人偶。";
+            skillDescription[3] = "消耗60mp，吟唱0。召唤出蓬莱人偶，对敌方造成1.5倍法术强度的法术伤害。若自身每" +
+                "存在一个人偶，每一个将会额外提高1.5倍的法术强度伤害。释放后会清除自己的人偶。";
         }
         public override string GetState()
         {
@@ -70,12 +70,12 @@ namespace BotConsole.TouhouPD.Wife.Wives.CherryBlossom
         {
             if(ExistBuff("奥尔良人偶"))
             {
-                int dmg=enemy.BeingAttack(this,currentMagic*4/5,DamageType.magic);
+                int dmg=enemy.BeingAttack(this,currentMagic*6/5,DamageType.magic);
                 HpGet(dmg * 3 / 10);
             }
             if(ExistBuff("上海人偶"))
             {
-                enemy.BeingAttack(this,currentMagic*4/5,DamageType.magic);
+                enemy.BeingAttack(this,currentMagic*6/5,DamageType.magic);
                 enemy.currentMdefend -= 10;
                 if(enemy.currentMdefend<0)
                 {
@@ -96,8 +96,8 @@ namespace BotConsole.TouhouPD.Wife.Wives.CherryBlossom
                 return 0;
             }
             MpReduce(30);
-            oneCool = 3;
-            AddBuff(new Orleans(3));
+            oneCool = 4;
+            AddBuff(new Orleans(5));
             return base.SkillOne(target);
         }
         public override int SkillTwo(WifeBase target)
@@ -107,8 +107,8 @@ namespace BotConsole.TouhouPD.Wife.Wives.CherryBlossom
                 return 0;
             }
             MpReduce(30);
-            twoCool = 3;
-            AddBuff(new Shanghai(3));
+            twoCool = 4;
+            AddBuff(new Shanghai(5));
             return base.SkillOne(target);
         }
         public override int SkillThree(WifeBase target)
@@ -117,15 +117,15 @@ namespace BotConsole.TouhouPD.Wife.Wives.CherryBlossom
             {
                 return 0;
             }
-            double rate = 1;
+            double rate = 1.5;
             if (ExistBuff("奥尔良人偶"))
             {
-                rate += 1;
+                rate += 1.5;
                 RemoveBuff("奥尔良人偶");
             }
             if (ExistBuff("上海人偶"))
             {
-                rate += 1;
+                rate += 1.5;
                 RemoveBuff("上海人偶");
             }
             base.SkillThree(target);

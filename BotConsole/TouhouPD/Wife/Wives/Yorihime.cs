@@ -12,7 +12,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         public static int weight = 40;
         public static int sid = 1;
         public bool filthyGod;
-        public bool gionsama;//祇园神
+        public int gionsama;//祇园神
         public int izunome;//伊豆能卖
         public int amatsumi;//天津瓮星
         public int kanayamahi;//金山彦命
@@ -23,7 +23,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         public int amaterasuCold;//天照御神
         public Yorihime()
         {
-            gionsama = false;
+            gionsama = 0;
             amaterasu = 0;
             izunome = 0;
             amatsumi = 0;
@@ -69,7 +69,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         {
             string res = "";
             res += filthyGod ? "秽神\n" : "崇神\n";
-            res += gionsama ? "祇园神\n" : "";
+            res += gionsama>0 ? "祇园神剩余"+gionsama+"\n" : "";
             res += izunome > 0 ? "伊豆能卖持续回合" + izunome + '\n' : "";
             res += amaterasu > 0 ? "天照大神持续回合" + amaterasu + '\n' : "";
             res += gionsamaCold > 0 ? "祇园之神冷却时间" + gionsamaCold + '\n' : "";
@@ -107,9 +107,9 @@ namespace BotConsole.TouhouPD.Wife.Wives
         public override int BeingAttack(WifeBase attacker, int damage, DamageType type)
         {
             int finalDmg = currentHp;
-            if(gionsama)
+            if(gionsama>0)
             {
-                gionsama = !gionsama;
+                gionsama--;
                 base.BeingAttack(attacker, damage / 2, type);
                 int retdmg=attacker.BeingAttack(this, damage / 2, type);
                 if (amaterasu > 0)
@@ -233,7 +233,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
                 gionsamaCold = 5;
                 currentHp -= maxHpFinal / 5;
                 filthyGod = !filthyGod;
-                gionsama = true;
+                gionsama = 3;
             }
             else if (!filthyGod && currentMp >= maxMpFinal / 5&&amaterasuCold<=0)
             {
