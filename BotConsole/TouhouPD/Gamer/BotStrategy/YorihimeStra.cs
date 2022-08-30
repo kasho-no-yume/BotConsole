@@ -11,10 +11,11 @@ namespace BotConsole.TouhouPD.Gamer.BotStrategy
     internal class YorihimeStra : Strategy
     {
         public Queue<int> skillSeq;
+        public Yorihime yorihime;
         public YorihimeStra(WifeBase wife) : base(wife)
         {
             skillSeq = new Queue<int>();
-            this.wife = wife as Yorihime;
+            yorihime = (Yorihime)wife;
             skillSeq.Enqueue(2);
             skillSeq.Enqueue(2);
             skillSeq.Enqueue(3);
@@ -23,10 +24,25 @@ namespace BotConsole.TouhouPD.Gamer.BotStrategy
 
         public override string HowToDo()
         {
-            if(wife.CanUseSkill(skillSeq.Peek()))
+            if(!yorihime.gionsama&&yorihime.filthyGod&&yorihime.CanUseTwo())
             {
-                skillSeq.Enqueue(skillSeq.Peek());
-                return "skill" + skillSeq.Dequeue();
+                return "skill2";
+            }
+            if(yorihime.amaterasu<=0&&!yorihime.filthyGod && yorihime.CanUseTwo())
+            {
+                return "skill2";
+            }
+            if(yorihime.amatsumi<=0&&yorihime.filthyGod && yorihime.CanUseThree())
+            {
+                return "skill3";
+            }
+            if(yorihime.kanayamahi <= 0 && !yorihime.filthyGod && yorihime.CanUseThree())
+            {
+                return "skill3";
+            }
+            if(yorihime.gionsama&&yorihime.filthyGod&&yorihime.CanUseOne())
+            {
+                return "skill1";
             }
             return "attack";
         }

@@ -12,7 +12,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         public static int weight = 40;
         public static int sid = 1;
         public bool filthyGod;
-        public int gionsama;//祇园神
+        public bool gionsama;//祇园神
         public int izunome;//伊豆能卖
         public int amatsumi;//天津瓮星
         public int kanayamahi;//金山彦命
@@ -23,7 +23,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         public int amaterasuCold;//天照御神
         public Yorihime()
         {
-            gionsama = 0;
+            gionsama = false;
             amaterasu = 0;
             izunome = 0;
             amatsumi = 0;
@@ -50,15 +50,14 @@ namespace BotConsole.TouhouPD.Wife.Wives
             description = "月之暗面的月人。曾经在完全碾压的情况下完胜以红魔馆馆主为首的月球异变团伙。其实力，就" +
                 "连幻想乡的大贤者都无法与之正面对抗。";
             skillTitle[0] = "神灵凭依的天上人";
-            skillDescription[0] = "坐拥超越八百万神明的力量，依姬几乎无懈可击。其受到的所有伤害会减少当前mp点数。" +
-                "若是伤害小于其当前mp则会被直接无视。此外，每使用一种降神仪式，依姬所降神的种类会切换为另一种。" +
+            skillDescription[0] = "坐拥超越八百万神明的力量，依姬几乎无懈可击。若其受到大于最大生命值一半的伤害，" +
+                "则会依据超过的百分比减小并反弹减小的伤害。此外，每使用一种降神仪式，依姬所降神的种类会切换为另一种。" +
                 "依姬初始的降神是秽神（写在技能左边的）。";
             skillTitle[1] = "伊邪那岐/伊豆能卖";
             skillDescription[1] = "消耗20%hp/mp，吟唱0.2x。清除敌方所有正面buff/清除自己所有负面buff并且让自己" +
                 "两回合内不会被施加负面buff。";
             skillTitle[2] = "祇园之神/天照大神";
-            skillDescription[2] = "消耗20%hp/mp，吟唱0.2x。下一次自己受到的非buff伤害减50%，" +
-                "且不会因为该次伤害死亡（最多被扣至1血），返还敌方另外50%该伤害。" +
+            skillDescription[2] = "消耗20%hp/mp，吟唱0.2x。下一次依姬死亡时以1血复活。"+
                 "/四回合内，回复造成伤害的30%生命值和造成伤害5%的mp。该技能的秽神和崇神各有5回合冷却。";
             skillTitle[3] = "天津瓮星/金山彦命";
             skillDescription[3] = "消耗20%hp/mp，吟唱0。基于敌我双方法强总和，每回合对敌方造成总值40%的法术伤害" +
@@ -69,7 +68,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         {
             string res = "";
             res += filthyGod ? "秽神\n" : "崇神\n";
-            res += gionsama>0 ? "祇园神剩余"+gionsama+"\n" : "";
+            res += gionsama ? "祇园神"+"\n" : "";
             res += izunome > 0 ? "伊豆能卖持续回合" + izunome + '\n' : "";
             res += amaterasu > 0 ? "天照大神持续回合" + amaterasu + '\n' : "";
             res += gionsamaCold > 0 ? "祇园之神冷却时间" + gionsamaCold + '\n' : "";
@@ -82,8 +81,6 @@ namespace BotConsole.TouhouPD.Wife.Wives
         }
         public override void HpReduce(int amount)
         {
-            amount -= currentMp;
-            amount=amount<=0?0:amount;
             base.HpReduce(amount);
         }
         public override void AddBuff(BuffBase buff)
@@ -107,24 +104,21 @@ namespace BotConsole.TouhouPD.Wife.Wives
         public override int BeingAttack(WifeBase attacker, int damage, DamageType type)
         {
             int finalDmg = currentHp;
-            if(gionsama>0)
+            if(damage>maxHpFinal/2)
             {
-                gionsama--;
-                base.BeingAttack(attacker, damage / 2, type);
-                int retdmg=attacker.BeingAttack(this, damage / 2, type);
-                if (amaterasu > 0)
-                {
-                    HpGet(retdmg * 3 / 10);
-                    MpGet(retdmg / 20);
-                }
-                if (currentHp<=0)
-                {
-                    currentHp = 1;
-                }
+                double rate=damage/maxHpFinal-0.5;
+                rate = rate > 0.5 ? 0.5 : rate;
+                attacker.BeingAttack(this, (int)(damage * rate), type);
+                base.BeingAttack(attacker, (int)(damage * (1-rate)), type);
             }
             else
             {
-                base.BeingAttack(attacker, damage , type);
+                base.BeingAttack(this, damage, type);
+            }
+            if (gionsama&&currentHp<=0)
+            {
+                gionsama = false;
+                currentHp = 1;
             }
             finalDmg -= currentHp;
             return finalDmg;
@@ -233,7 +227,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
                 gionsamaCold = 5;
                 currentHp -= maxHpFinal / 5;
                 filthyGod = !filthyGod;
-                gionsama = 3;
+                gionsama = true;
             }
             else if (!filthyGod && currentMp >= maxMpFinal / 5&&amaterasuCold<=0)
             {
