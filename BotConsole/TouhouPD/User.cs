@@ -227,16 +227,27 @@ namespace BotConsole.TouhouPD
         public void ExpConfront(int amount)
         {
             int id = GetConfront();
-            string sql = string.Format("select * from ownedwife where qq='{0}' and id={1}",qq,id);
+            string sql = string.Format("select * from ownedwife where qq='{0}'",qq);
             var reader = new DBMgr("erogemanager", "a1935515130", "botuserdata").Search(sql);
-            reader.Read();
-            var level = (int)reader["level"];
-            var exp = (int)reader["exp"];
+            string cmd = "replace into ownedwife (qq,id,level,exp) values ";
+            while(reader.Read())
+            {
+                var level = (int)reader["level"];
+                var exp = (int)reader["exp"];
+                var cid = (int)reader["id"];
+                var wife = WifeFactory.GenerateWife(cid, level, exp);
+                if (cid==id)
+                {
+                    wife.GetExp(amount);
+                }
+                else
+                {
+                    wife.GetExp(amount * 3 / 10);
+                }
+                cmd += string.Format("('{0}',{1},{2},{3}),",qq,cid,wife.level,wife.currentExp);
+            }           
             reader.Close();
-            var wife=WifeFactory.GenerateWife(id,level,exp);
-            wife.GetExp(amount);
-            string cmd=string.Format("update ownedwife set level={0},exp={1} where qq='{2}' and " +
-                "id={3}", wife.level, wife.currentExp, qq, id);
+            cmd = cmd.Remove(cmd.Length-1);
             new DBMgr("erogemanager", "a1935515130", "botuserdata").Execute(cmd);
         }
         public void Exercise()
@@ -380,7 +391,7 @@ namespace BotConsole.TouhouPD
         public void DeleteEquip(int id)
         {
             string sql="delete from equipdata where qq='"+qq+"' and id=" + id;
-            if(id==int.Parse(equipment))
+            if(id==GetEquippedEquip())
             {
                 equipment = "";
                 UpdateToDB();

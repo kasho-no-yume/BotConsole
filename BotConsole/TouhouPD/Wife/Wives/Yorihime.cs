@@ -106,7 +106,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
             int finalDmg = currentHp;
             if(damage>maxHpFinal/2)
             {
-                double rate=damage/maxHpFinal-0.5;
+                double rate=(double)damage/(double)maxHpFinal-0.5;
                 rate = rate > 0.5 ? 0.5 : rate;
                 attacker.BeingAttack(this, (int)(damage * rate), type);
                 base.BeingAttack(attacker, (int)(damage * (1-rate)), type);
