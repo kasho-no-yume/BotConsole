@@ -10,8 +10,12 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
     {
         public static int weight = 1000;
         public static int sid = 1001;
+        public int threeCool;
+        public int twoSus;
         public Daiyousei()
         {
+            threeCool = 0;
+            twoSus = -1;
             imgUrl = "https://i.postimg.cc/90jK6mdD/2A.png";
             maxHpBase = 100;
             maxMpBase = 70;
@@ -32,9 +36,14 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             skillTitle[2] = "捉迷藏";
             skillDescription[2] = "消耗40mp，吟唱0。两回合内，将自己的闪避提升至60。";
             skillTitle[3] = "你弄痛我了";
-            skillDescription[3] = "消耗40mp，吟唱1x。基于已损失的生命值的1倍，返还敌方法术伤害。";
+            skillDescription[3] = "消耗40mp，吟唱1x。基于已损失的生命值的1倍，返还敌方法术伤害。冷却一回合。";
         }
-
+        public override string GetState()
+        {
+            string res = twoSus > 0 ? "捉迷藏持续时间" + twoSus + '\n' : "";
+            res += threeCool > 0 ? "三技能冷却时间" + threeCool + '\n' : "";
+            return res+base.GetState();
+        }
         public override bool CanUseOne()
         {
             return currentMp>=30;
@@ -42,7 +51,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
 
         public override bool CanUseThree()
         {
-            return currentMp>=40;
+            return currentMp>=40&&threeCool<=0;
         }
 
         public override bool CanUseTwo()
@@ -51,7 +60,12 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
         }
         public override void RoundStart(WifeBase enemy)
         {
-            currentMissrate = missrateBase;
+            threeCool--;
+            twoSus--;
+            if(twoSus==0)
+            {
+                currentMissrate = missrateBase;
+            }
             base.RoundStart(enemy);
         }
         public override int SkillOne(WifeBase target)
@@ -91,7 +105,8 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             {
                 return 0;
             }
-            currentMissrate = 90;
+            currentMissrate = 60;
+            twoSus = 2;
             return base.SkillTwo(target);
         }
         public override int SkillThree(WifeBase target)
@@ -101,6 +116,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
                 return 0;
             }
             int damage = (maxHpFinal - currentHp) * 2;
+            threeCool = 2;
             base.SkillThree(target);
             return target.BeingAttack(this,damage,DamageType.magic);
         }

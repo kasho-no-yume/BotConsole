@@ -29,7 +29,8 @@ namespace BotConsole.TouhouPD.Wife
             wifeWeight.Add(Alice.sid, Alice.weight);
             wifeWeight.Add(Yorihime.sid, Yorihime.weight);
             wifeWeight.Add(EternityLarva.sid, EternityLarva.weight);
-            wifeWeight.Add(Sakata.sid, Sakata.weight);            
+            wifeWeight.Add(Sakata.sid, Sakata.weight);
+            wifeWeight.Add(KomanoAunn.sid, KomanoAunn.weight);
             foreach(var i in wifeWeight)
             {
                 weightSum += i.Value;

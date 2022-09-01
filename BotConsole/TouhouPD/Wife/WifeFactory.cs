@@ -30,6 +30,7 @@ namespace BotConsole.TouhouPD.Wife
             id2Name.Add(Alice.sid, typeof(Alice));
             id2Name.Add(EternityLarva.sid,typeof(EternityLarva));
             id2Name.Add(Sakata.sid,typeof(Sakata));
+            id2Name.Add(KomanoAunn.sid,typeof(KomanoAunn));
             
         }
         /// <summary>

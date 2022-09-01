@@ -113,7 +113,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
             }
             else
             {
-                base.BeingAttack(this, damage, type);
+                base.BeingAttack(attacker, damage, type);
             }
             if (gionsama&&currentHp<=0)
             {
