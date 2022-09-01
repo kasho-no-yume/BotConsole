@@ -24,7 +24,11 @@ namespace BotConsole.TouhouPD.Gamer
         {
             if(strategy==null)
             {
-                return "attack";
+                if(wife.CanUseSkill(0))
+                {
+                    return "attack";
+                }
+                return "defend";
             }
             return strategy.HowToDo();
         }

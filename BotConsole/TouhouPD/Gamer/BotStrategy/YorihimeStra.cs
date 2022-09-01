@@ -44,7 +44,11 @@ namespace BotConsole.TouhouPD.Gamer.BotStrategy
             {
                 return "skill1";
             }
-            return "attack";
+            if(yorihime.CanUseSkill(0))
+            {
+                return "attack";
+            }
+            return "defend";
         }
     }
 }
