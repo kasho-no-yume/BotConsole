@@ -78,9 +78,9 @@ namespace BotConsole.TouhouPD
                     }
                     PlayingQQ.Playing(user.qq);
                     var gamer = new GamePlayer(user);
-                    var wife = WifeFactory.GenerateWife(1,levelres);
-                    //var equip = EquipFactory.GenerateEquip(3, 5, 0);
-                    var bot = new GameBot("测试用机器人", wife, null, new YorihimeStra(wife));
+                    var wife = WifeFactory.GenerateWife(1002,levelres);
+                    var equip = EquipFactory.GenerateEquip(4, 5, 0);
+                    var bot = new GameBot("测试用机器人", wife, null, new CirnoStra(wife));
                     new BattleRoom(gamer, bot).GameStart();
                 }
                 if (para[1].Equals("custom"))
@@ -136,9 +136,9 @@ namespace BotConsole.TouhouPD
                     {
                         return;
                     }                    
-                    var wife = WifeFactory.GenerateWife(1, 10 * levelres);
-                    //var equip = EquipFactory.GenerateEquip(3, ((levelres - 1) / 2) + 1, 0);
-                    var bot = new GameBot("每日挑战机器人", wife, null, new YorihimeStra(wife));                   
+                    var wife = WifeFactory.GenerateWife(1002, 10 * levelres);
+                    var equip = EquipFactory.GenerateEquip(4, ((levelres - 1) / 2) + 1, 0);
+                    var bot = new GameBot("每日挑战机器人", wife, equip, new CirnoStra(wife));                   
                     switch (para[1].Substring(0,2))
                     {
                         case "经验":

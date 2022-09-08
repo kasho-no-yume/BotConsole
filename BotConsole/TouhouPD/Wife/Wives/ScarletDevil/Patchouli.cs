@@ -37,7 +37,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             skillTitle[2] = "皇家圣焰";
             skillDescription[2] = "消耗100mp，吟唱0.2x。造成1.5倍魔法攻击力的魔法伤害。";
             skillTitle[3] = "贤者之石";
-            skillDescription[3] = "消耗200mp，吟唱3x。造成4倍魔法攻击力的魔法伤害。";
+            skillDescription[3] = "消耗200mp，吟唱3x。造成5倍魔法攻击力的魔法伤害。";
         }
 
         public override bool CanUseOne()
@@ -100,7 +100,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
                 return 0;
             }
             base.SkillThree(target);
-            return target.BeingAttack(this,currentMagic*4,DamageType.magic);
+            return target.BeingAttack(this,currentMagic*5,DamageType.magic);
         }
     }
 }

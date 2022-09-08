@@ -21,6 +21,7 @@ namespace BotConsole.TouhouPD.Equipment
             SSRare.Add(KontamaPotion.sid, typeof(KontamaPotion));
             SSRare.Add(Gungnir.sid, typeof(Gungnir));
             SSRare.Add(Laevatain.sid, typeof(Laevatain));
+            SSRare.Add(TenguFan.sid, typeof(TenguFan));
             SRare.Add(UselessSpell.sid,typeof(UselessSpell));
             SRare.Add(MadoBook.sid, typeof(MadoBook));
             SRare.Add(BrokenCrystal.sid,typeof(BrokenCrystal));

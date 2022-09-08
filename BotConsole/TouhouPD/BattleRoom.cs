@@ -22,10 +22,12 @@ namespace BotConsole.TouhouPD
         //吟唱中的技能序号，以及吟唱时间倍率。
         Dictionary<WifeBase, int> skillCache = new Dictionary<WifeBase, int>();
         Dictionary<WifeBase,double>speedRate=new Dictionary<WifeBase,double>();
+        List<ForwardMsg> forwardMsgs;
         public BattleRoom(GamePlayer initiator,Participant receipent)
         {
             this.receipent = receipent;
             this.initiator = initiator;
+            forwardMsgs = new List<ForwardMsg>();
             one = initiator.wife;
             two = receipent.wife;
             group = initiator.user.group;
@@ -205,6 +207,10 @@ namespace BotConsole.TouhouPD
                             new Sender().QuicklyReply(group,part.name+"攻击敌方！造成了"+dmg+"伤害。");
                             ok = true;
                         }
+                        else
+                        {
+                            new Sender().QuicklyReply(group, "目前不能攻击。");
+                        }
                         break;
                     case "skill":
                             string res = "";
@@ -327,7 +333,12 @@ namespace BotConsole.TouhouPD
         }
         private void HpReduceListener(WifeBase wife,int amount)
         {
-            new Sender().QuicklyReply(group, wife.name + "生命值损失了" + amount);
+            forwardMsgs.Add(new ForwardMsg("系统","2868534536", wife.name + "生命值损失了" + amount));
+        }
+        private void SendCacheForward()
+        {
+            new Sender().QuicklySendForward(group, forwardMsgs);
+            forwardMsgs.Clear();
         }
     }
 }
