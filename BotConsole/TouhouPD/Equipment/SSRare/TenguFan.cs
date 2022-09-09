@@ -29,7 +29,7 @@ namespace BotConsole.TouhouPD.Equipment.SSRare
         {
             if(oppo!=null)
             {
-                self.currentSpeed += oppo.currentSpeed * 7 / 20;
+                self.currentSpeed += oppo.speedBase * 7 / 20;
                 if(self.currentSpeed>oppo.currentSpeed)
                 {
                     double rate = oppo.currentSpeed / (double)self.currentSpeed;

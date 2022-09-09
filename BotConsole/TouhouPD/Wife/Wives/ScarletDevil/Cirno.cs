@@ -29,7 +29,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             skillDescription[2] = "消耗60mp，吟唱0。冻结攻击者一回合。";
             skillTitle[3] = "钻石风暴";
             skillDescription[3] = "消耗60mp，吟唱1x。释放极强的冰冻之力，造成3倍魔法攻击的魔法伤害。若己方的速度" +
-                "高于敌方，则额外提高己方速度高于敌方速度比例的倍数两倍的伤害。";
+                "高于敌方，则额外提高己方速度高于敌方速度比例的倍数的伤害。";
         }
 
         public override bool CanUseOne()
@@ -93,7 +93,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             double rate = 1;
             if(currentSpeed>target.currentSpeed)
             {
-                rate = (currentSpeed*2 / target.currentSpeed) + 1;
+                rate = (currentSpeed / target.currentSpeed) ;
             }
             return target.BeingAttack(this,(int)(currentMagic*3*rate),DamageType.magic);
         }
