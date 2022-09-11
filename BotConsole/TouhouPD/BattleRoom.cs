@@ -23,6 +23,7 @@ namespace BotConsole.TouhouPD
         Dictionary<WifeBase, int> skillCache = new Dictionary<WifeBase, int>();
         Dictionary<WifeBase,double>speedRate=new Dictionary<WifeBase,double>();
         List<ForwardMsg> forwardMsgs;
+        private BattleNotice battleNotice;
         public BattleRoom(GamePlayer initiator,Participant receipent)
         {
             this.receipent = receipent;
@@ -31,11 +32,12 @@ namespace BotConsole.TouhouPD
             one = initiator.wife;
             two = receipent.wife;
             group = initiator.user.group;
+            battleNotice = new BattleNotice(group);
         }
         public void GameStart()
         {          
-            one.AttributeInit();
-            two.AttributeInit();
+            one.AttributeInit(battleNotice);
+            two.AttributeInit(battleNotice);
             if(initiator.weapon!=null)
             {
                 initiator.weapon.Equipping(one);
@@ -151,11 +153,6 @@ namespace BotConsole.TouhouPD
         private void ProcessAct(WifeBase self,WifeBase opponent,Participant part)
         {            
             bool ok = false;
-            self.OnHpReduce += HpReduceListener;
-            opponent.OnHpReduce += HpReduceListener;
-            self.RoundStart(opponent);
-            opponent.OnHpReduce -= HpReduceListener;
-            self.OnHpReduce -= HpReduceListener;
             if (skillCache[self]!=0)
             {
                 int damage = 0;
@@ -166,15 +163,15 @@ namespace BotConsole.TouhouPD
                     speedRate[self] = 1;
                     return;
                 }
-                switch(skillCache[self])
+                var res = part.name + "吟唱的技能" + skillCache[self] + "成功发动！\n";
+                battleNotice.Add(res);
+                switch (skillCache[self])
                 {
                     case 1: damage = self.SkillOne(opponent); break;
                     case 2: damage = self.SkillTwo(opponent); break;
                     case 3: damage = self.SkillThree(opponent); break;
-                }
-                var res = part.name + "吟唱的技能" + skillCache[self] + "成功发动！\n";
-                res += damage != 0 ? "造成" + damage + "伤害！" : "";
-                new Sender().QuicklyReply(group, res);
+                }               
+                battleNotice.SendNotice();
                 skillCache[self] = 0;
                 speedRate[self] = 1;               
                 return;
@@ -194,8 +191,8 @@ namespace BotConsole.TouhouPD
             hint += "——选择你的操作——\n";
             hint += "[攻击]攻击敌方\n[防御]进行防御\n[查看技能]忘记技能效果了？\n[技能123]释放对应技能\n" +
                 "[详细]查看双方详细属性\n[状态]查看敌我buff\n[认输]你就是个loser";
-            var m = new ForwardMsg(self.name, initiator.name, hint);
-            new Sender().QuicklySendForward(group, m);
+            battleNotice.Add(hint);
+            battleNotice.SendNotice();
             while (!ok)
             {
                 switch (part.RequireAct())
@@ -204,7 +201,6 @@ namespace BotConsole.TouhouPD
                         if (self.CanUseSkill(0))
                         {
                             int dmg = self.Attack(opponent);
-                            new Sender().QuicklyReply(group,part.name+"攻击敌方！造成了"+dmg+"伤害。");
                             ok = true;
                         }
                         else
@@ -226,7 +222,7 @@ namespace BotConsole.TouhouPD
                             if(self.GetChantOne()==0)
                             {
                                 int dmg=self.SkillOne(opponent);
-                                new Sender().QuicklyReply(group, part.name+"释放技能1！造成了" + dmg + "伤害。");
+                                battleNotice.Add(part.name+"释放技能1！造成了" + dmg + "伤害。");
                             }
                             else
                             {
@@ -247,7 +243,7 @@ namespace BotConsole.TouhouPD
                             if (self.GetChantTwo() == 0)
                             {
                                 int dmg=self.SkillTwo(opponent);
-                                new Sender().QuicklyReply(group, part.name + "释放技能2！造成了" + dmg + "伤害。");
+                                battleNotice.Add(part.name + "释放技能2！造成了" + dmg + "伤害。");
                             }
                             else
                             {
@@ -268,7 +264,7 @@ namespace BotConsole.TouhouPD
                             if (self.GetChantThree() == 0)
                             {
                                 int dmg=self.SkillThree(opponent);
-                                new Sender().QuicklyReply(group, part.name + "释放技能3！造成了" + dmg + "伤害。");
+                                battleNotice.Add(part.name + "释放技能3！造成了" + dmg + "伤害。");
                             }
                             else
                             {
@@ -329,16 +325,8 @@ namespace BotConsole.TouhouPD
                         self.currentHp = 0;
                         break;
                 }
+                battleNotice.SendNotice();
             }
-        }
-        private void HpReduceListener(WifeBase wife,int amount)
-        {
-            forwardMsgs.Add(new ForwardMsg("系统","2868534536", wife.name + "生命值损失了" + amount));
-        }
-        private void SendCacheForward()
-        {
-            new Sender().QuicklySendForward(group, forwardMsgs);
-            forwardMsgs.Clear();
         }
     }
 }

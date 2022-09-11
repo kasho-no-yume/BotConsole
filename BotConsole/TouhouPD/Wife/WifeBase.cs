@@ -52,6 +52,7 @@ namespace BotConsole.TouhouPD.Wife
         public int criticalDamage;
         public string[] skillDescription = new string[4];
         public string[] skillTitle=new string[4];
+        public BattleNotice battleNotice;
         /// <summary>
         /// 能在几回合内开始行动，建议是在不能行动的时候不处理回合开始方法。
         /// 这个也不建议在wife类内处理，是上层使用的字段。
@@ -176,7 +177,7 @@ namespace BotConsole.TouhouPD.Wife
             level = aimlevel;
         }
 
-        public virtual void AttributeInit()
+        public virtual void AttributeInit(BattleNotice battleNotice)
         {
             maxHpFinal = maxHpBase;
             maxMpFinal = maxMpBase;
@@ -197,6 +198,7 @@ namespace BotConsole.TouhouPD.Wife
             OnBuffAdded += NullEvent;
             OnBuffRemoved += NullEvent;
             OnHpReduce += NullEvent;
+            this.battleNotice = battleNotice;
     }
         /// <summary>
         /// 回合开始时的处理，包括buff效果结算，防御状态移除，回合开始委托事件。
@@ -233,7 +235,12 @@ namespace BotConsole.TouhouPD.Wife
         {
             OnAttackEvent(this, target);
             int damage = this.currentAttack;
-            return target.BeingAttack(this,damage,DamageType.physical);
+            var finalDmg= target.BeingAttack(this, damage, DamageType.physical);
+            if(finalDmg>0)
+            {
+                battleNotice.Add(name+"的攻击造成了"+finalDmg+"点伤害。");
+            }
+            return finalDmg;
         }
         /// <summary>
         /// 重写时不用鸡方法时需注意，本方法含有以下要素
@@ -249,10 +256,12 @@ namespace BotConsole.TouhouPD.Wife
             if(new Random().Next(100)<currentMissrate)
             {
                 damage = 0;
+                battleNotice.Add(name+"闪开了攻击。");
                 return damage;
             }
             if(new Random().Next(0,100)<attacker.criticalFinal)
             {
+                battleNotice.Add(name+"被暴击了！");
                 damage = (int)(damage * attacker.criticalDamage / 100);
             }
             if (isDefending)
@@ -262,18 +271,23 @@ namespace BotConsole.TouhouPD.Wife
             calculateMdef = calculateMdef * (100 - attacker.magicPierceRate) / 100;
             calculateMdef -= attacker.magicPierce;
             calculateDef -= attacker.attackPierce;
+            string hint = name + "受到了原本伤害为" + damage + "点的";
             switch (type)
             {
                 
                 case DamageType.physical:
+                    hint += "物理伤害";
                     damage = damage * 100 / (100 + calculateDef < 0 ? 100 : 100+calculateDef);
                     break;
                 case DamageType.magic:
+                    hint += "魔法伤害";
                     damage = damage * 100 / (100 + calculateMdef < 0 ? 100 : 100+calculateMdef);
                     break;
                 case DamageType.truth:
+                    hint += "真实伤害";
                     break;
             }
+            battleNotice.Add(hint);
             HpReduce(damage);
             return damage;
         }
@@ -304,6 +318,7 @@ namespace BotConsole.TouhouPD.Wife
             {
                 return;
             }
+            battleNotice.Add(name + "被施加了" + buff.name);
             if(!ExistBuff(buff))
             {
                 buff.BeingAdded(this);
@@ -330,6 +345,7 @@ namespace BotConsole.TouhouPD.Wife
             {
                 if (i.name.Equals(buffName))
                 {
+                    battleNotice.Add(name+"的"+buffName+"效果被移除。");
                     OnBuffRemoved(i);
                     i.BeingRemoved(this);
                     buffList.Remove(i);
@@ -347,6 +363,7 @@ namespace BotConsole.TouhouPD.Wife
             OnBuffRemoved(buff);
             buff.BeingRemoved(this);
             buffList.Remove(buff);
+            battleNotice.Add(name + "的" + buff.name + "效果被移除。");
         }
         /// <summary>
         /// hp减少，最底层的hp操作代码
@@ -361,7 +378,8 @@ namespace BotConsole.TouhouPD.Wife
                 return;
             }
             currentHp -= amount;
-            if(currentHp < 0)
+            battleNotice.Add(name + "的生命值损失了"+amount);
+            if (currentHp < 0)
             {
                 currentHp = 0;
                 OnDeathingEvent(this,null);
@@ -374,12 +392,14 @@ namespace BotConsole.TouhouPD.Wife
                 return false;
             }
             currentMp -= amount;
+            battleNotice.Add(name + "的法力值损失了" + amount);
             return true;
         }
         public virtual void HpGet(int amount)
         {
             currentHp += amount;
-            if(currentHp>=maxHpFinal)
+            battleNotice.Add(name + "的生命值回复了" + amount);
+            if (currentHp>=maxHpFinal)
             {
                 currentHp = maxHpFinal;
             }
@@ -387,6 +407,7 @@ namespace BotConsole.TouhouPD.Wife
         public virtual void MpGet(int amount)
         {
             currentMp += amount;
+            battleNotice.Add(name + "的法力值回复了" + amount);
             if (currentMp >= maxMpFinal)
             {
                 currentMp = maxMpFinal;

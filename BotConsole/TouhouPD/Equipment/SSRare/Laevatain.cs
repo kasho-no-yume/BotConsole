@@ -29,6 +29,7 @@ namespace BotConsole.TouhouPD.Equipment.SSRare
         {
             if(opponent!=null)
             {
+                self.battleNotice.Add("莱瓦汀的特质发动！");
                 opponent.BeingAttack(self, self.currentAttack, WifeBase.DamageType.magic);
             }
         }

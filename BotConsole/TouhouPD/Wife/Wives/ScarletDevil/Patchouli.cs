@@ -82,6 +82,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
                 return 0;
             }
             target.silent = 2;
+            battleNotice.Add("帕秋莉沉默敌方两回合！");
             return base.SkillOne(target);
         }
         public override int SkillTwo(WifeBase target)

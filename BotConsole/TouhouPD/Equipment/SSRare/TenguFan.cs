@@ -16,8 +16,8 @@ namespace BotConsole.TouhouPD.Equipment.SSRare
             name = "天狗的团扇";
             quality = Quality.SSR;
             description = "也许对天狗有这样的刻板印象，天狗总是会拿着团扇，好像团扇才是天狗速度快的原因。";
-            spellDescription = "战斗开始时，自身的速度额外提高敌方速度的35%，若自身速度大于敌方，则根据自身速度与" +
-                "敌方速度的比例按比提高闪避率。";
+            spellDescription = "在第一个自己回合时，自身的速度额外提高敌方速度的35%，若自身速度大于敌方，则根据自身速度与" +
+                "敌方速度的比例的一半按比提高闪避率。";
             extraSpeed = 10;
         }
         public override void Spell(WifeBase wife)
@@ -34,7 +34,7 @@ namespace BotConsole.TouhouPD.Equipment.SSRare
                 {
                     double rate = oppo.currentSpeed / (double)self.currentSpeed;
                     rate = 1 - rate;
-                    var msrt =(int) (rate * 100);
+                    var msrt =(int) (rate * 50);
                     self.currentMissrate += msrt;
                 }
                 owner.OnRoundStartEvent -= ExtraSpeed;

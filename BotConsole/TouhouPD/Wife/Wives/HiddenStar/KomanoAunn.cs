@@ -72,6 +72,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
         {
             if(threeRound==0&& accumulate >= maxHpFinal * 3 / 10)
             {
+                battleNotice.Add("阿哞积蓄了过量伤害！");
                 HpReduce(accumulate);
                 accumulate = 0;
             }

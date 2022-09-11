@@ -79,8 +79,8 @@ namespace BotConsole.TouhouPD
                     PlayingQQ.Playing(user.qq);
                     var gamer = new GamePlayer(user);
                     var wife = WifeFactory.GenerateWife(1002,levelres);
-                    var equip = EquipFactory.GenerateEquip(4, ((levelres - 1) / 2) + 1, 0);
-                    var bot = new GameBot("测试用机器人", wife, equip, new CirnoStra(wife));
+                    //var equip = EquipFactory.GenerateEquip(4, ((levelres - 1) / 2) + 1, 0);
+                    var bot = new GameBot("测试用机器人", wife, null, new CirnoStra(wife));
                     new BattleRoom(gamer, bot).GameStart();
                 }
                 if (para[1].Equals("custom"))

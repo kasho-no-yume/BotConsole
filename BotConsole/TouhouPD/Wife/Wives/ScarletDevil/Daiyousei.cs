@@ -19,7 +19,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             imgUrl = "https://i.postimg.cc/90jK6mdD/2A.png";
             maxHpBase = 100;
             maxMpBase = 70;
-            speedBase = 18;
+            speedBase = 28;
             speedAddition = 2;
             hpAddition = 12;
             attackBase = 10;
@@ -75,28 +75,41 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
                 return 0;
             }
             int random = new Random().Next(5);
+            string iden="";
+            int amount = 0;
             switch(random)
             {
                 case 0:currentAttack += target.attackBase / 10;
                     target.currentAttack -= target.attackBase / 10;
+                    iden = "攻击力";
+                    amount= target.attackBase / 10;
                     break;
                 case 1:
                     currentMagic += target.magicBase / 10;
                     target.currentMagic -= target.magicBase / 10;
+                    iden = "法术强度";
+                    amount= target.magicBase / 10;
                     break;
                 case 2:
                     currentSpeed += target.speedBase / 10;
                     target.currentSpeed -= target.speedBase / 10;
+                    amount = target.speedBase / 10;
+                    iden = "速度";
                     break;
                 case 3:
                     currentDefend += target.defendBase / 10;
                     target.currentDefend -= target.defendBase / 10;
+                    amount = target.defendBase / 10;
+                    iden = "防御力";
                     break;
                 case 4:
                     currentMdefend += target.mdefendBase / 10;
                     target.currentMdefend -= target.mdefendBase / 10;
+                    amount = target.mdefendBase / 10;
+                    iden = "法术防御";
                     break;
             }
+            battleNotice.Add("大妖精偷取了敌方的"+iden+amount+"点！");
             return base.SkillOne(target);
         }
         public override int SkillTwo(WifeBase target)

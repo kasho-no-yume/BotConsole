@@ -17,6 +17,7 @@ namespace BotConsole.TouhouPD.Buff.Buffs
         public override void LastingEffect(WifeBase wife)
         {
             base.LastingEffect(wife);
+            wife.battleNotice.Add("流血buff的效果发动！");
             wife.HpReduce(strength);
         }
 

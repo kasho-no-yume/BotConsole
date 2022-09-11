@@ -70,11 +70,13 @@ namespace BotConsole.TouhouPD.Wife.Wives.CherryBlossom
         {
             if(ExistBuff("奥尔良人偶"))
             {
+                battleNotice.Add("奥尔良人偶的攻击！");
                 int dmg=enemy.BeingAttack(this,currentMagic*6/5,DamageType.magic);
                 HpGet(dmg * 3 / 10);
             }
             if(ExistBuff("上海人偶"))
             {
+                battleNotice.Add("上海人偶的攻击！");
                 enemy.BeingAttack(this,currentMagic*6/5,DamageType.magic);
                 enemy.currentMdefend -= 10;
                 if(enemy.currentMdefend<0)

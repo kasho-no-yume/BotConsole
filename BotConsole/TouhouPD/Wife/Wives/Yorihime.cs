@@ -117,6 +117,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
             }
             if (gionsama&&currentHp<=0)
             {
+                battleNotice.Add("依姬受到过量伤害，祇园神的效果触发。");
                 gionsama = false;
                 currentHp = 1;
             }
@@ -173,6 +174,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         {            
             if(amatsumi>0)
             {
+                battleNotice.Add("依姬天津瓮星技能发动");
                 int dmg = enemy.BeingAttack(this, amatsumi, DamageType.magic);
                 HpGet(dmg * 3 / 10);
                 MpGet(dmg / 20);
@@ -182,6 +184,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         {           
             if (kanayamahi > 0)
             {
+                battleNotice.Add("依姬金山彦命技能发动");
                 int dmg = enemy.BeingAttack(this, kanayamahi, DamageType.physical);
                 HpGet(dmg * 3 / 10);
                 MpGet(dmg / 20);

@@ -26,8 +26,11 @@ namespace BotConsole.TouhouPD.Equipment.SSRare
         private void Bleeding(WifeBase self,WifeBase? enemy)
         {
             if(enemy != null)
-            enemy.HpReduce(self.currentAttack / 5);
-            self.HpGet(self.currentAttack / 5);
+            {
+                self.battleNotice.Add("冈格尼尔之枪的特质发动！");
+                enemy.HpReduce(self.currentAttack / 5);
+                self.HpGet(self.currentAttack / 5);
+            }           
         }
         public override void Spell(WifeBase wife)
         {

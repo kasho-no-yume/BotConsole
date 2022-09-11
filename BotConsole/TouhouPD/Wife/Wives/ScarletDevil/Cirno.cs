@@ -22,7 +22,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             skillTitle[0] = "湖上冰精";
             skillDescription[0] = "琪露诺总是散发着寒气，受到伤害减少20%。对琪露诺造成伤害时会受到寒气影响，使攻击者" +
                 "降低一点速度。此外，琪露诺的普通攻击也能使敌方降低一点速度。";
-            skillDescription[1] = "消耗30mp，吟唱0.5x。降低攻击者速度10%，造成法术强度1倍的法术伤害。" +
+            skillDescription[1] = "消耗20mp，吟唱0.5x。降低攻击者速度10%，造成法术强度1倍的法术伤害。" +
                 "重复使用重复降低但不刷新持续时间。持续三回合。";
             skillTitle[1] = "冰瀑";
             skillTitle[2] = "完美冻结";
@@ -34,7 +34,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
 
         public override bool CanUseOne()
         {
-            return currentMp >= 30;
+            return currentMp >= 20;
         }
 
         public override bool CanUseThree()
@@ -67,7 +67,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
         }
         public override int SkillOne(WifeBase target)
         {
-            if (!MpReduce(30))
+            if (!MpReduce(20))
             {
                 return 0;
             }

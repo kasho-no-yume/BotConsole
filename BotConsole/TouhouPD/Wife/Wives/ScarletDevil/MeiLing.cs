@@ -76,6 +76,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             immuneRound--;
             if(immuneRound==0)
             {
+                battleNotice.Add("红美玲的虹色太极拳发动！");
                 enemy.BeingAttack(this, totalDmg, DamageType.physical);
                 totalDmg = 0;
             }
@@ -110,6 +111,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
         {
             if(immuneRound>0&&type==DamageType.physical)
             {
+                battleNotice.Add("红美玲本来要受到"+damage+"点物理伤害，但因为虹色太极拳被全部格挡！");
                 OnAttackEvent(this, attacker);
                 totalDmg += damage;
                 return 0;
