@@ -153,6 +153,7 @@ namespace BotConsole.TouhouPD
         private void ProcessAct(WifeBase self,WifeBase opponent,Participant part)
         {            
             bool ok = false;
+            self.RoundStart(opponent);
             if (skillCache[self]!=0)
             {
                 int damage = 0;
