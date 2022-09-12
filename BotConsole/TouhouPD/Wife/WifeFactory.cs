@@ -19,8 +19,8 @@ namespace BotConsole.TouhouPD.Wife
             id2Name.Add(0, typeof(Merry));
             id2Name.Add(Yorihime.sid, typeof(Yorihime));
             id2Name.Add(Rumia.sid, typeof(Rumia));
-            id2Name.Add(Cirno.sid,typeof(Cirno));
             id2Name.Add(Daiyousei.sid, typeof(Daiyousei));
+            id2Name.Add(Cirno.sid,typeof(Cirno));           
             id2Name.Add(MeiLing.sid,typeof(MeiLing));
             id2Name.Add(Koakuma.sid,typeof(Koakuma));
             id2Name.Add(Patchouli.sid,typeof(Patchouli));

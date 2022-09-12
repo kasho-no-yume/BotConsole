@@ -63,6 +63,10 @@ namespace BotConsole.TouhouPD
                 {
                     return;
                 }
+                if (!wifelist.ContainsKey(number))
+                {
+                    return;
+                }
                 if (!int.TryParse(para[2],out int level))
                 {
                     return;
