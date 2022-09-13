@@ -252,6 +252,7 @@ namespace BotConsole.TouhouPD.Wife
         /// <returns></returns>
         public virtual int BeingAttack(WifeBase attacker,int damage,DamageType type)
         {
+            string hint = name + "受到了原本伤害为" + damage + "点的";
             BeingAttackEvent(this,attacker);
             if(new Random().Next(100)<currentMissrate)
             {
@@ -270,8 +271,7 @@ namespace BotConsole.TouhouPD.Wife
             calculateDef = calculateDef * (100- attacker.attackPierceRate) / 100;
             calculateMdef = calculateMdef * (100 - attacker.magicPierceRate) / 100;
             calculateMdef -= attacker.magicPierce;
-            calculateDef -= attacker.attackPierce;
-            string hint = name + "受到了原本伤害为" + damage + "点的";
+            calculateDef -= attacker.attackPierce;            
             switch (type)
             {
                 

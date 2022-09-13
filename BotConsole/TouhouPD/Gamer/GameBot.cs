@@ -19,6 +19,7 @@ namespace BotConsole.TouhouPD.Gamer
             this.wife = wife;
             this.user = null;
             strategy = s;
+            iden = "bot";
         }
         public override string RequireAct()
         {

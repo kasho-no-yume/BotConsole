@@ -111,7 +111,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             currentHp -= maxHpFinal / 2;
             base.SkillThree(target);
             int damage = currentAttack;
-            double rate = (1-(currentHp  / maxHpFinal ))*2+2.5;
+            double rate = (1-(currentHp  / (double)maxHpFinal ))*2+2.5;
             damage = (int)(damage * rate);
             int finalDmg = target.BeingAttack(this, damage, DamageType.physical);
             HpGet(finalDmg / 5);

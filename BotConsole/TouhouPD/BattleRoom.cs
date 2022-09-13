@@ -66,12 +66,7 @@ namespace BotConsole.TouhouPD
                 {
                     if(one.cantActRound<=0)
                     {
-                        int selfinit = one.currentHp, oppo = two.currentHp;
                         ProcessAct(one, two, initiator);
-                        /*selfinit = selfinit - one.currentHp;
-                        oppo = oppo - two.currentHp;
-                        new Sender().QuicklyReply(group, String.Format("这个回合，{0}受到了{1}伤害，敌方受到了" +
-                            "{2}伤害。", initiator.name, selfinit, oppo));*/
                     }
                     one.cantActRound--;
                     progressOne += fullProgress;
@@ -84,12 +79,7 @@ namespace BotConsole.TouhouPD
                 {
                     if (two.cantActRound <= 0)
                     {
-                        int selfinit = two.currentHp, oppo = one.currentHp;
                         ProcessAct(two, one, receipent);
-                        /*selfinit = selfinit - two.currentHp;
-                        oppo = oppo - one.currentHp;
-                        new Sender().QuicklyReply(group, String.Format("这个回合，{0}受到了{1}伤害，敌方受到了" +
-                            "{2}伤害。", receipent.name, selfinit, oppo));*/
                     }
                     two.cantActRound--;
                     progressTwo += fullProgress;
@@ -154,6 +144,10 @@ namespace BotConsole.TouhouPD
         {            
             bool ok = false;
             self.RoundStart(opponent);
+            if(self.currentHp<=0||opponent.currentHp<=0)
+            {
+                return;
+            }
             if (skillCache[self]!=0)
             {
                 int damage = 0;
@@ -171,29 +165,34 @@ namespace BotConsole.TouhouPD
                     case 1: damage = self.SkillOne(opponent); break;
                     case 2: damage = self.SkillTwo(opponent); break;
                     case 3: damage = self.SkillThree(opponent); break;
-                }               
-                battleNotice.SendNotice();
+                }
+                if (part.iden == "player")
+                    battleNotice.SendNotice();
                 skillCache[self] = 0;
                 speedRate[self] = 1;               
                 return;
             }
             string hint = "现在轮到" + part.name + "行动\n";
-            hint += "【己方老婆】" + self.name+" lv."+self.level+'\n';
-            hint += String.Format("生命：{0}/{7}\n法力值：{1}/{8}\n攻击力：{2}\n" +
-                "法强：{3}\n速度：{4}\n防御力：{5}\n" +"法术防御：{6}\n"
-                ,self.currentHp,self.currentMp,self.currentAttack,self.currentMagic,
-                self.currentSpeed,self.currentDefend,self.currentMdefend,self.maxHpFinal,self.maxMpFinal);
-            hint += "【敌方老婆】" + opponent.name + " lv."+opponent.level+'\n';
-            hint += String.Format("生命：{0}/{7}\n法力值：{1}/{8}\n攻击力：{2}\n法强：{3}" +
-                "\n速度：{4}\n防御力：{5}\n" +"法术防御：{6}\n"
-                , opponent.currentHp, opponent.currentMp, opponent.currentAttack,
-                opponent.currentMagic,opponent.currentSpeed, opponent.currentDefend, opponent.currentMdefend,
-                opponent.maxHpFinal,opponent.maxMpFinal);
-            hint += "——选择你的操作——\n";
-            hint += "[攻击]攻击敌方\n[防御]进行防御\n[查看技能]忘记技能效果了？\n[技能123]释放对应技能\n" +
-                "[详细]查看双方详细属性\n[状态]查看敌我buff\n[认输]你就是个loser";
+            if(part.iden=="player")
+            {
+                hint += "【己方老婆】" + self.name + " lv." + self.level + '\n';
+                hint += String.Format("生命：{0}/{7}\n法力值：{1}/{8}\n攻击力：{2}\n" +
+                    "法强：{3}\n速度：{4}\n防御力：{5}\n" + "法术防御：{6}\n"
+                    , self.currentHp, self.currentMp, self.currentAttack, self.currentMagic,
+                    self.currentSpeed, self.currentDefend, self.currentMdefend, self.maxHpFinal, self.maxMpFinal);
+                hint += "【敌方老婆】" + opponent.name + " lv." + opponent.level + '\n';
+                hint += String.Format("生命：{0}/{7}\n法力值：{1}/{8}\n攻击力：{2}\n法强：{3}" +
+                    "\n速度：{4}\n防御力：{5}\n" + "法术防御：{6}\n"
+                    , opponent.currentHp, opponent.currentMp, opponent.currentAttack,
+                    opponent.currentMagic, opponent.currentSpeed, opponent.currentDefend, opponent.currentMdefend,
+                    opponent.maxHpFinal, opponent.maxMpFinal);
+                hint += "——选择你的操作——\n";
+                hint += "[攻击]攻击敌方\n[防御]进行防御\n[查看技能]忘记技能效果了？\n[技能123]释放对应技能\n" +
+                    "[详细]查看双方详细属性\n[状态]查看敌我buff\n[认输]你就是个loser";
+            }          
             battleNotice.Add(hint);
-            battleNotice.SendNotice();
+            if (part.iden == "player")
+                battleNotice.SendNotice();
             while (!ok)
             {
                 switch (part.RequireAct())
@@ -229,7 +228,7 @@ namespace BotConsole.TouhouPD
                             {
                                 skillCache[self] = 1;
                                 speedRate[self] = self.GetChantOne();
-                                new Sender().QuicklyReply(group, part.name + "开始吟唱技能1");
+                                battleNotice.Add(part.name + "开始吟唱技能1");
                             }
                             ok = true;
                         }
@@ -250,7 +249,7 @@ namespace BotConsole.TouhouPD
                             {
                                 skillCache[self] = 2;
                                 speedRate[self] = self.GetChantTwo();
-                                new Sender().QuicklyReply(group, part.name + "开始吟唱技能2");
+                                battleNotice.Add(part.name + "开始吟唱技能2");
                             }
                             ok = true;
                         }
@@ -271,7 +270,7 @@ namespace BotConsole.TouhouPD
                             {
                                 skillCache[self] = 3;
                                 speedRate[self] = self.GetChantThree();
-                                new Sender().QuicklyReply(group, part.name + "开始吟唱技能3");
+                                battleNotice.Add(part.name + "开始吟唱技能3");
                             }
                             ok = true;
                         }
@@ -283,7 +282,7 @@ namespace BotConsole.TouhouPD
                     case "defend":
                         self.Defend();
                         ok = true;
-                        new Sender().QuicklyReply(group,part.name+"选择了防御。");
+                        battleNotice.Add(part.name + "选择了防御。");
                         break;
                     case "state":
                         string resstr = "【己方状态】\n";
@@ -326,6 +325,7 @@ namespace BotConsole.TouhouPD
                         self.currentHp = 0;
                         break;
                 }
+                if(part.iden=="player")
                 battleNotice.SendNotice();
             }
         }

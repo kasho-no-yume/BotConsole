@@ -30,6 +30,7 @@ namespace BotConsole.TouhouPD.Gamer
             weapon = user.GetEquip(user.GetEquippedEquip());
             name = user.qq;
             hasReceived=false;
+            iden = "player";
         }
 
         public override string RequireAct()

@@ -27,6 +27,7 @@ namespace BotConsole.TouhouPD.Equipment.SSRare
         }
         private void Reincrnation(WifeBase self,WifeBase? none)
         {
+            self.battleNotice.Add(name+"因绀珠之药的异能复活！");
             self.currentHp = self.maxHpFinal;
             self.OnDeathingEvent -= Reincrnation;
             for(int i=self.buffList.Count-1;i>=0;i--)

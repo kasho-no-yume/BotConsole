@@ -22,7 +22,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
             skillDescription[0] = "居住深山，缺乏情报。遇到强者的时候总想套近乎，受到的所有伤害-20%。";
             skillTitle[1] = "诅咒之雨";
             skillDescription[1] = "消耗30mp，吟唱0。谋杀前的秋雨，消磨了敌方战斗的意志，使敌方攻击力和法术强度" +
-                "-5。持续3回合，重复触发叠加效果但不刷新持续时间。";
+                "-10%。持续3回合，重复触发叠加效果但不刷新持续时间。";
             skillTitle[2] = "菜刀研磨";
             skillDescription[2] = "消耗30mp，吟唱1x。把刀磨的更锋利，自身攻击力+10。";
             skillTitle[3] = "深山中的谋杀";
@@ -63,8 +63,8 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
             {
                 return 0;
             }
-            target.AddBuff(new AttackDown(3, 5));
-            target.AddBuff(new MagicDown(3, 5));
+            target.AddBuff(new AttackDown(3, target.attackBase/10));
+            target.AddBuff(new MagicDown(3, target.magicBase / 10));
             return base.SkillOne(target);
         }
         public override int SkillTwo(WifeBase target)

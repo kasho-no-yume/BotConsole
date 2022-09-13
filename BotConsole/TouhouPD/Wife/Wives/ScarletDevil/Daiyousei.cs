@@ -36,7 +36,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             skillTitle[2] = "捉迷藏";
             skillDescription[2] = "消耗40mp，吟唱0。两回合内，将自己的闪避提升至60。";
             skillTitle[3] = "你弄痛我了";
-            skillDescription[3] = "消耗40mp，吟唱1x。基于已损失的生命值的1倍，返还敌方法术伤害。冷却一回合。";
+            skillDescription[3] = "消耗40mp，吟唱1x。基于已损失的生命值的1.25倍，返还敌方法术伤害。冷却一回合。";
         }
         public override string GetState()
         {
@@ -128,7 +128,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             {
                 return 0;
             }
-            int damage = (maxHpFinal - currentHp) * 2;
+            int damage = (maxHpFinal - currentHp) * 5/4;
             threeCool = 2;
             base.SkillThree(target);
             return target.BeingAttack(this,damage,DamageType.magic);

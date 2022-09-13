@@ -14,6 +14,7 @@ namespace BotConsole.TouhouPD.Gamer
         public Equip? weapon=null;
         public User? user=null;
         public string name;
+        public string iden;
         /// <summary>
         /// 前标识后值，支持money，exp，equip
         /// </summary>
