@@ -19,12 +19,12 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
             description = "很温顺的妖精，即使是因为那次事件暴走，也并没有产生攻击性。获得强大力量之后，这样单纯" +
                 "的妖精估计只是想着去哪大闹一场的程度吧。";
             skillTitle[0] = "真夏夜的妖精梦";
-            skillDescription[0] = "拉尔瓦在感到危险时（被攻击时）会释放臭气，给敌方5点伤害，并给敌方施加一层鳞粉" +
+            skillDescription[0] = "拉尔瓦在感到危险时（被攻击时）会释放臭气，给敌方10点物理伤害，并给敌方施加一层鳞粉" +
                 "buff。每拥有一层鳞粉buff，敌方的基础属性全部-1(不包括速度)。";
             skillTitle[1] = "凤蝶的鳞粉";
-            skillDescription[1] = "消耗20mp，吟唱0。给敌方施加一层鳞粉buff。";
+            skillDescription[1] = "消耗20mp，吟唱0。给敌方施加三层鳞粉buff。";
             skillTitle[2] = "沾身的鳞粉";
-            skillDescription[2] = "消耗40mp，吟唱0.5x。给敌方施加两层鳞粉buff。额外回复鳞粉buff层数*5的生命值。";
+            skillDescription[2] = "消耗40mp，吟唱0.5x。给敌方施加两层鳞粉buff。额外回复鳞粉buff层数*20的生命值。";
             skillTitle[3] = "真夏的振翅";
             skillDescription[3] = "消耗40mp，吟唱0.5x。去除敌方所有的鳞粉buff，造成层数一半倍数攻击力的法术伤害";
         }
@@ -53,6 +53,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
         public override int BeingAttack(WifeBase attacker, int damage, DamageType type)
         {
             attacker.AddBuff(new Scale(100000, 1));
+            attacker.BeingAttack(this, 10, DamageType.physical);
             return base.BeingAttack(attacker, damage, type);
         }
         public override int SkillOne(WifeBase target)
@@ -61,7 +62,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
             {
                 return 0;
             }
-            target.AddBuff(new Scale(100000, 1));
+            target.AddBuff(new Scale(100000, 3));
             return base.SkillOne(target);
         }
         public override int SkillTwo(WifeBase target)
@@ -76,7 +77,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
                 if(i.name.Equals("鳞粉"))
                 {
                     int level = i.strength;
-                    HpGet(level * 5);
+                    HpGet(level * 20);
                 }
             }
             return base.SkillTwo(target);

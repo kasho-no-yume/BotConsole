@@ -12,6 +12,8 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
     {
         public static int weight = 1000;
         public static int sid = 1005;
+        public int swept = -1;
+        private WifeBase? enemy;
         public Koakuma()
         {
             imgUrl = "https://i.postimg.cc/c4bRWjRd/4A.png";
@@ -30,13 +32,24 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             skillDescription[1] = "消耗30mp，吟唱1x。好吃的点心减缓了敌方的攻击性，敌方攻击力和法术攻击" +
                 "减少10%，持续2回合。重复触发叠加效果但不刷新持续时间。";
             skillTitle[2] = "来杯下午茶吧";
-            skillDescription[2] = "消耗60mp，吟唱1x。清除敌方所有buff。";
+            skillDescription[2] = "消耗60mp，吟唱1x。清除敌方所有正面buff。";
             skillTitle[3] = "该大扫除了";
-            skillDescription[3] = "消耗90mp，吟唱1x。清除敌方所有正面buff。";
+            skillDescription[3] = "消耗90mp，吟唱1x。给敌方添加扫除buff。敌方五回合内，若敌方尝试添加正面buff则会" +
+                "受到小恶魔3倍攻击力的伤害。此外，小恶魔5回合期间内，若尝试给小恶魔添加buff，则敌方也会受到" +
+                "小恶魔3倍攻击力的伤害。";
         }
         public override void AddBuff(BuffBase buff)
         {
-            
+            if(swept>0)
+            if(enemy!=null)
+            {
+                enemy.BeingAttack(this, currentAttack * 3, DamageType.physical);
+            }
+        }
+        public override string GetState()
+        {
+            string res = swept>0?"扫除时间"+swept+'\n':"";
+            return res+base.GetState();
         }
         public override bool CanUseOne()
         {
@@ -49,6 +62,15 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
         public override bool CanUseThree()
         {
             return currentMp>=90;
+        }
+        public override void RoundStart(WifeBase enemy)
+        {
+            if(this.enemy==null)
+            {
+                this.enemy = enemy;
+            }
+            swept--;
+            base.RoundStart(enemy);
         }
         public override double GetChantOne()
         {
@@ -90,11 +112,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             {
                 return 0;
             }
-            for (int i = target.buffList.Count - 1; i >= 0; i--)
-            {
-                if (target.buffList[i].effect==BuffBase.Effect.positive)
-                target.RemoveBuff(target.buffList[i]);
-            }
+            swept = 5;
             return base.SkillThree(target);
         }
     }

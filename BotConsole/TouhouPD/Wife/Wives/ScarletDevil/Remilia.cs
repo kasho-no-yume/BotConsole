@@ -32,10 +32,10 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             skillDescription[1] = "消耗30mp，吟唱0。造成1倍攻击力的伤害，并且使下一次攻击及技能回复" +
                 "100%造成伤害的生命值。";
             skillTitle[2] = "红魔法";
-            skillDescription[2] = "消耗30%hp，吟唱1x。给敌方施加流血buff，每回合损失攻击力50%的生命值，" +
+            skillDescription[2] = "消耗20%hp，吟唱1x。给敌方施加流血buff，每回合损失攻击力50%的生命值，" +
                 "持续3回合。重复使用刷新持续时间。";
             skillTitle[3] = "绯红之主";
-            skillDescription[3] = "消耗50%hp，吟唱1x。造成2.5倍攻击力的伤害，额外提高已损失生命值比例" +
+            skillDescription[3] = "消耗50%当前hp，吟唱1x。造成2.5倍攻击力的伤害，额外提高已损失生命值比例" +
                 "2倍的伤害。";
         }
         public override string GetState()
@@ -50,12 +50,12 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
 
         public override bool CanUseThree()
         {
-            return currentHp >= maxHpFinal / 2;
+            return true;
         }
 
         public override bool CanUseTwo()
         {           
-            return currentHp >= maxHpFinal * 3 / 10;
+            return currentHp >= maxHpFinal * 2 / 10;
         }
         public override int Attack(WifeBase target)
         {
@@ -94,21 +94,17 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
         }
         public override int SkillTwo(WifeBase target)
         {
-            if(currentHp<maxHpFinal*3/10)
+            if(currentHp<maxHpFinal*2/10)
             {
                 return 0;
             }
-            currentHp -= maxHpFinal * 3 / 10;
+            currentHp -= maxHpFinal * 2 / 10;
             target.AddBuff(new Bleed(3, currentAttack / 2));
             return base.SkillTwo(target);
         }
         public override int SkillThree(WifeBase target)
         {
-            if(currentHp < maxHpFinal / 2)
-            {
-                return 0;
-            }
-            currentHp -= maxHpFinal / 2;
+            HpReduce( currentHp / 2);
             base.SkillThree(target);
             int damage = currentAttack;
             double rate = (1-(currentHp  / (double)maxHpFinal ))*2+2.5;
