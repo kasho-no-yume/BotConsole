@@ -27,11 +27,13 @@ namespace BotConsole.TouhouPD.Gamer.BotStrategy
             {
                 return "skill3";
             }
-            if(self.CanUseSkill(seq.Peek()))
+            if(enemy.disarm<=0&&self.CanUseSkill(1))
             {
-                var res = seq.Peek();
-                seq.Enqueue(seq.Dequeue());
-                return "skill" + res;
+                return "skill1";
+            }
+            if(self.CanUseSkill(2))
+            {
+                return "skill2";
             }
             if(wife.CanUseSkill(0))
             {
@@ -46,6 +48,10 @@ namespace BotConsole.TouhouPD.Gamer.BotStrategy
             damage *= (10 + self.rounds) / 10;
             int mdef = enemy.currentMdefend;
             damage = damage * 100 / (100 + mdef);
+            if(enemy.isDefending)
+            {
+                damage /= 2;
+            }
             if(damage>=enemy.currentHp)
             {
                 return true;

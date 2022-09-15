@@ -127,6 +127,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         }
         public override int SkillThree(WifeBase target)
         {
+            usedSpark = true;
             var extra = currentMp / 2;
             MpReduce(currentMp);
             int damage = (currentMagic + extra) * 2;
