@@ -78,9 +78,13 @@ namespace BotConsole.TouhouPD
                     }
                     PlayingQQ.Playing(user.qq);
                     var gamer = new GamePlayer(user);
-                    var wife = WifeFactory.GenerateWife(1002,levelres);
-                    //var equip = EquipFactory.GenerateEquip(4, ((levelres - 1) / 2) + 1, 0);
-                    var bot = new GameBot("测试用机器人", wife, null, new CirnoStra(wife));
+                    var wife = WifeFactory.GenerateWife(2,levelres);
+                    Equip? equip = null;
+                    if(levelres%10==0)
+                    {
+                        equip= EquipFactory.GenerateEquip(0, ((levelres/10 - 1) / 2) + 1, 0);
+                    }
+                    var bot = new GameBot("测试用机器人", wife, equip, new MarisaStra(wife,gamer.wife));
                     new BattleRoom(gamer, bot).GameStart();
                 }
                 if (para[1].Equals("custom"))
@@ -136,9 +140,16 @@ namespace BotConsole.TouhouPD
                     {
                         return;
                     }                    
-                    var wife = WifeFactory.GenerateWife(1002, 10 * levelres);
-                    var equip = EquipFactory.GenerateEquip(4, ((levelres - 1) / 2) + 1, 0);
-                    var bot = new GameBot("每日挑战机器人", wife, equip, new CirnoStra(wife));                   
+                    var wife = WifeFactory.GenerateWife(2, 10 * levelres);
+                    var equip = EquipFactory.GenerateEquip(0, ((levelres - 1) / 2) + 1, 0);
+                    if (!user.PowerReduce())
+                    {
+                        new Sender().QuicklyReply(user.group, "你体力不够了。");
+                        return;
+                    }
+                    PlayingQQ.Playing(user.qq);
+                    var gamer = new GamePlayer(user);
+                    var bot = new GameBot("每日挑战机器人", wife, equip, new MarisaStra(wife,gamer.wife));                   
                     switch (para[1].Substring(0,2))
                     {
                         case "经验":
@@ -156,14 +167,7 @@ namespace BotConsole.TouhouPD
                             bot.bouns.Add(new KeyValuePair<string, int>("equip", EquipFactory.RandomQuality(quality3)));
                             break;
                         default:return;
-                    }
-                    if (!user.PowerReduce())
-                    {
-                        new Sender().QuicklyReply(user.group, "你体力不够了。");
-                        return;
-                    }
-                    PlayingQQ.Playing(user.qq);
-                    var gamer = new GamePlayer(user);              
+                    }                                
                     new BattleRoom(gamer, bot).GameStart();
                 }
                 if (para[1].Equals("新手教程"))

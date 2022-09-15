@@ -20,7 +20,7 @@ namespace BotConsole.TouhouPD.Gamer.BotStrategy
 
         public override string HowToDo()
         {
-            if(wife.CanUseTwo())
+            if(wife.CanUseSkill(2))
             {
                 return "skill2";                
             }

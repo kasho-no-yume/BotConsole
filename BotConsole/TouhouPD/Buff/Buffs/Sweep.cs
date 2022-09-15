@@ -26,6 +26,7 @@ namespace BotConsole.TouhouPD.Buff.Buffs
         }
         private void GoDamage(BuffBase buff)
         {
+            owner.battleNotice.Add(owner.name+"试图给自己添加buff受到反伤！");
             owner.BeingAttack(owner,strength,WifeBase.DamageType.physical);
         }
     }

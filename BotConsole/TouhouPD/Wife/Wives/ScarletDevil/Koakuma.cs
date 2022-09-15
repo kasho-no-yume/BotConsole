@@ -43,6 +43,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             if(swept>0)
             if(enemy!=null)
             {
+                battleNotice.Add("试图给小恶魔添加buff，但被扫除了！");
                 enemy.BeingAttack(this, currentAttack * 3, DamageType.physical);
             }
         }

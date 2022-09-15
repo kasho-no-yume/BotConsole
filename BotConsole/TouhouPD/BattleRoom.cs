@@ -85,6 +85,7 @@ namespace BotConsole.TouhouPD
                     progressTwo += fullProgress;
                 }
             }
+            battleNotice.SendNotice();
             if (initiator.user != null)
             {
                 PlayingQQ.PlayingOver(initiator.user.qq);

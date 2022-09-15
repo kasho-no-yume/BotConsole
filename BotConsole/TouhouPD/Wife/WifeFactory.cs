@@ -18,6 +18,7 @@ namespace BotConsole.TouhouPD.Wife
             id2Name=new Dictionary<int, Type>();
             id2Name.Add(0, typeof(Merry));
             id2Name.Add(Yorihime.sid, typeof(Yorihime));
+            id2Name.Add(Marisa.sid, typeof(Marisa));
             id2Name.Add(Rumia.sid, typeof(Rumia));
             id2Name.Add(Daiyousei.sid, typeof(Daiyousei));
             id2Name.Add(Cirno.sid,typeof(Cirno));           

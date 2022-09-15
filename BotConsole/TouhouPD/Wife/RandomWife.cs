@@ -17,6 +17,7 @@ namespace BotConsole.TouhouPD.Wife
         static RandomWife()
         {
             wifeWeight.Add(Merry.sid, Merry.weight);
+            wifeWeight.Add(Marisa.sid, Marisa.weight);
             wifeWeight.Add(Rumia.sid, Rumia.weight);
             wifeWeight.Add(Cirno.sid, Cirno.weight);
             wifeWeight.Add(Daiyousei.sid, Daiyousei.weight);

@@ -24,23 +24,23 @@ namespace BotConsole.TouhouPD.Gamer.BotStrategy
 
         public override string HowToDo()
         {
-            if(!yorihime.gionsama&&yorihime.filthyGod&&yorihime.CanUseTwo())
+            if(!yorihime.gionsama&&yorihime.filthyGod&&yorihime.CanUseSkill(2))
             {
                 return "skill2";
             }
-            if(yorihime.amaterasu<=0&&!yorihime.filthyGod && yorihime.CanUseTwo())
+            if(yorihime.amaterasu<=0&&!yorihime.filthyGod && yorihime.CanUseSkill(2))
             {
                 return "skill2";
             }
-            if(yorihime.amatsumi<=0&&yorihime.filthyGod && yorihime.CanUseThree())
+            if(yorihime.amatsumi<=0&&yorihime.filthyGod && yorihime.CanUseSkill(3))
             {
                 return "skill3";
             }
-            if(yorihime.kanayamahi <= 0 && !yorihime.filthyGod && yorihime.CanUseThree())
+            if(yorihime.kanayamahi <= 0 && !yorihime.filthyGod && yorihime.CanUseSkill(3))
             {
                 return "skill3";
             }
-            if(yorihime.gionsama&&yorihime.filthyGod&&yorihime.CanUseOne())
+            if(yorihime.gionsama&&yorihime.filthyGod&&yorihime.CanUseSkill(1))
             {
                 return "skill1";
             }
