@@ -60,8 +60,8 @@ namespace BotConsole.TouhouPD.Wife.Wives
             skillDescription[2] = "消耗20%hp/mp，吟唱0.2x。下一次依姬死亡时以1血复活。"+
                 "/四回合内，回复造成伤害的30%生命值和造成伤害5%的mp。该技能的秽神和崇神各有5回合冷却。";
             skillTitle[3] = "天津瓮星/金山彦命";
-            skillDescription[3] = "消耗20%hp/mp，吟唱0。基于敌我双方法强总和，每回合对敌方造成总值40%的法术伤害" +
-                "/基于敌我双方攻击力总和，每回合对敌方造成总值40%的物理伤害。此技能重复触发会叠加。" +
+            skillDescription[3] = "消耗20%hp/mp，吟唱0。基于敌我双方法强总和，每回合对敌方造成总值80%的法术伤害" +
+                "/基于敌我双方攻击力总和，每回合对敌方造成总值80%的物理伤害。此技能重复触发会叠加。" +
                 "该技能的秽神和崇神各有5回合冷却。";
         }
         public override string GetState()
@@ -252,14 +252,14 @@ namespace BotConsole.TouhouPD.Wife.Wives
                 amatsumiCold = 5;
                 currentHp -= maxHpFinal / 5;
                 filthyGod = !filthyGod;
-                amatsumi += (currentAttack + target.currentAttack) * 2/5;
+                amatsumi += (currentAttack + target.currentAttack) * 4/5;
             }
             else if (!filthyGod && currentMp >= maxMpFinal / 5 && kanayamahiCold <= 0)
             {
                 filthyGod = !filthyGod;
                 kanayamahiCold = 5;
                 MpReduce(maxMpFinal / 5);
-                kanayamahi += (currentMagic + target.currentMagic) * 2/5;
+                kanayamahi += (currentMagic + target.currentMagic) * 4/5;
             }
             else
             {

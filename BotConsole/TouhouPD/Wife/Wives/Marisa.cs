@@ -23,7 +23,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
                 "而又火力全开，因此非常胜任放烟花的职责。";
             magicBase = 30;
             magicAddition = 3;
-            mpAddition = 2;
+            mpAddition = 3;
             maxMpBase = 80;
             skillTitle[0] = "高火力的魔法使";
             skillDescription[0] = "只有高火力的魔法攻击能击中魔理沙，其受到的所有物理伤害减少其当前剩余法力值点" +
@@ -44,12 +44,12 @@ namespace BotConsole.TouhouPD.Wife.Wives
             return currentMp >= maxMpFinal * 3 / 10;
         }
 
-        public override bool CanUseThree()
+        public override bool CanUseTwo()
         {
             return currentMp >= maxMpFinal / 10;
         }
 
-        public override bool CanUseTwo()
+        public override bool CanUseThree()
         {
             return !usedSpark;
         }

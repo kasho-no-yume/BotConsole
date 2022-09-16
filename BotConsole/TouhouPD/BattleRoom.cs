@@ -144,7 +144,6 @@ namespace BotConsole.TouhouPD
         private void ProcessAct(WifeBase self,WifeBase opponent,Participant part)
         {            
             bool ok = false;
-            self.RoundStart(opponent);
             if(self.currentHp<=0||opponent.currentHp<=0)
             {
                 return;
@@ -173,6 +172,7 @@ namespace BotConsole.TouhouPD
                 speedRate[self] = 1;               
                 return;
             }
+            self.RoundStart(opponent);
             string hint = "现在轮到" + part.name + "行动\n";
             if(part.iden=="player")
             {

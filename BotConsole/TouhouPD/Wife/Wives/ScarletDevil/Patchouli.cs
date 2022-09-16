@@ -34,7 +34,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             skillDescription[0] = "帕秋莉知晓世上的一切魔法。战斗开始时基于敌方法术攻击的一半，增加" +
                 "自己的法术攻击。";
             skillTitle[1] = "沉静月神";
-            skillDescription[1] = "消耗50mp，吟唱1.5x。沉默敌方3回合，并减少敌方40%攻击力两回合。";
+            skillDescription[1] = "消耗50mp，吟唱1x。沉默敌方3回合，并减少敌方40%攻击力两回合。";
             skillTitle[2] = "皇家圣焰";
             skillDescription[2] = "消耗100mp，吟唱0.2x。造成1.5倍魔法攻击力的魔法伤害。";
             skillTitle[3] = "贤者之石";
@@ -66,7 +66,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
         }
         public override double GetChantOne()
         {
-            return 1.5;
+            return 1;
         }
         public override double GetChantTwo()
         {

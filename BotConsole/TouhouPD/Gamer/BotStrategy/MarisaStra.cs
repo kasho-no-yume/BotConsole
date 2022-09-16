@@ -27,7 +27,7 @@ namespace BotConsole.TouhouPD.Gamer.BotStrategy
             {
                 return "skill3";
             }
-            if(enemy.disarm<=0&&self.CanUseSkill(1))
+            if(enemy.disarm<=1&&self.CanUseSkill(1))
             {
                 return "skill1";
             }
