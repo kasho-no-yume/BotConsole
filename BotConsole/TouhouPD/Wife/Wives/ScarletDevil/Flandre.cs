@@ -26,10 +26,10 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
             id = 1009;
             description = "是蕾米莉亚领域外的妹妹，比起蕾米莉亚，芙兰朵露有着更为强大的破坏欲。其本身" +
                 "的表现也是趋于癫狂的。但是也能好好听人说话，若是想挑战的话，那几乎是不可能赢的吧。";
-            attackBase = 30;
+            attackBase = 40;
             magicBase = 0;
             magicAddition = 0;
-            attackAddition = 3;
+            attackAddition = 2;
             attackPierceRate = 100;
             skillTitle[0] = "鲜血恶魔";
             skillDescription[0] = "拥有着破坏事物根源的极强力量，没有任何防御可以抵挡。芙兰朵露的所有攻击" +

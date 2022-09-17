@@ -131,7 +131,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
             var extra = currentMp / 2;
             MpReduce(currentMp);
             int damage = (currentMagic + extra) * 2;
-            damage *= (10 + rounds) / 10;
+            damage = damage*(10 + rounds) / 10;
             return target.BeingAttack(this,damage,DamageType.magic);
         }
     }

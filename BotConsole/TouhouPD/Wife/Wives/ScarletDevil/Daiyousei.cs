@@ -48,7 +48,10 @@ namespace BotConsole.TouhouPD.Wife.Wives.ScarletDevil
         {
             return currentMp>=30;
         }
-
+        public override double GetChantThree()
+        {
+            return 1;
+        }
         public override bool CanUseThree()
         {
             return currentMp>=40&&threeCool<=0;

@@ -45,7 +45,7 @@ namespace BotConsole.TouhouPD.Gamer.BotStrategy
         {
             var extra = self.currentMp / 2;
             int damage = (self.currentMagic + extra) * 2;
-            damage *= (10 + self.rounds) / 10;
+            damage = damage*(10 + self.rounds) / 10;
             int mdef = enemy.currentMdefend;
             damage = damage * 100 / (100 + mdef);
             if(enemy.isDefending)
