@@ -83,7 +83,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
                 return 0;
             }
             base.SkillThree(target);
-            return base.BeingAttack(this,currentAttack*3,DamageType.physical);
+            return target.BeingAttack(this,currentAttack*3,DamageType.physical);
         }
     }
 }

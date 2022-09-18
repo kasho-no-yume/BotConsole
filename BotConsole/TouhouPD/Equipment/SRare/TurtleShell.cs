@@ -14,8 +14,8 @@ namespace BotConsole.TouhouPD.Equipment.SRare
             name = "神龟壳";
             quality = Quality.SR;
             description = "曾经是作为吉祥物，在香霖堂出售的存在。但是其本身似乎非常坚硬，应该可以抵御不少攻击。";
-            extraDef = 8;
-            extraMdef = 8;
+            extraDef = 10;
+            extraMdef = 10;
         }
     }
 }

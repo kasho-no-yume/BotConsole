@@ -37,6 +37,7 @@ namespace BotConsole.TouhouPD
             res += "输入【查看装备 序号】查看装备详情\n";
             res += "输入【装备 序号】装备上目标装备\n";
             res += "输入【一键熔铸】将背包里所有未装备的r级装备朝着5级r装备强化";
+            res += "输入【一键熔铸sr】将背包里所有未装备的sr级装备朝着5级sr装备强化(注意小写)";
             new Sender().QuicklyReply(user.group, res);
         }
         public static void CkeckEquip(User user,string param)
@@ -131,6 +132,67 @@ namespace BotConsole.TouhouPD
                 new DBMgr("erogemanager", "a1935515130", "botuserdata").Execute(sqlcmd);
             }
             new Sender().QuicklyReply(user.group,"你已一键熔铸成功。");
+            Console.WriteLine("success");
+        }
+        public static void OneKeyForgeSR(User user)
+        {
+            Queue<int>[] level = new Queue<int>[6];
+            for (int i = 0; i < level.Length; i++)
+            {
+                level[i] = new Queue<int>();
+            }
+            int equipped = user.GetEquippedEquip();
+            string cmd = "select * from equipdata where qq='" + user.qq + "'";
+            var reader = new DBMgr("erogemanager", "a1935515130", "botuserdata").Search(cmd);
+            while (reader.Read())
+            {
+                Equip temp = EquipFactory.GenerateEquip((int)reader["sid"], (int)reader["level"], (int)reader["id"]);
+                if (temp.quality == Equip.Quality.SR && temp.id != equipped && temp.level != 5)
+                {
+                    level[temp.level].Enqueue(temp.id);
+                }
+            }
+            reader.Close();
+            List<int> deleteId = new List<int>();
+            for (int i = 1; i < 5; i++)
+            {
+                while (level[i].Count >= 2)
+                {
+                    int one = level[i].Dequeue();
+                    int two = level[i].Dequeue();
+                    deleteId.Add(two);
+                    level[i + 1].Enqueue(one);
+                }
+            }
+            for (int i = 1; i <= 5; i++)
+            {
+                if (level[i].Count == 0)
+                {
+                    continue;
+                }
+                string sql = "update equipdata set level=" + i + " where id in(";
+                while (level[i].Count > 0)
+                {
+                    sql += level[i].Dequeue() + ",";
+                }
+                sql = sql.Remove(sql.Length - 1, 1);
+                sql += ')';
+                Console.WriteLine(sql);
+                new DBMgr("erogemanager", "a1935515130", "botuserdata").Execute(sql);
+            }
+            if (deleteId.Count != 0)
+            {
+                string sqlcmd = "delete from equipdata where id in(";
+                foreach (var i in deleteId)
+                {
+                    sqlcmd = sqlcmd + i + ',';
+                }
+                sqlcmd = sqlcmd.Remove(sqlcmd.Length - 1, 1);
+                sqlcmd += ')';
+                Console.WriteLine(sqlcmd);
+                new DBMgr("erogemanager", "a1935515130", "botuserdata").Execute(sqlcmd);
+            }
+            new Sender().QuicklyReply(user.group, "你已一键熔铸SR成功。");
             Console.WriteLine("success");
         }
     }

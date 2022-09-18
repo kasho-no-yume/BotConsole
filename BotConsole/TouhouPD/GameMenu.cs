@@ -70,6 +70,7 @@ namespace BotConsole.TouhouPD
                     case "购买":Shop.Purchase(user, msg); break;
                     case "查看商品":Shop.CheckGoods(user, msg);break;
                     case "一键熔铸":MyEquip.OneKeyForge(user);break;
+                    case "一键熔铸sr": MyEquip.OneKeyForgeSR(user); break;
                     case "清除异变":SinglePlay.ClearMutant(user, msg);break;
                     case "约架":new MultiplePlay().MakeFight(user, msg); break;
                     case "图鉴":Illustrated.CkeckIllustrated(user);break;
