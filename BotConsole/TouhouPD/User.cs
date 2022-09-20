@@ -260,10 +260,12 @@ namespace BotConsole.TouhouPD
                     var exp = new Random().Next(500, 1000);
                     operatetime = DateTime.Now;
                     TimeSpan span = TimeSpan.FromMinutes(new Random().Next(10,40));
-                    ExpConfront(exp);
-                    new Sender().QuicklyReply(group,"成功给出战老婆"+exp+"经验，冷却"+span.Minutes+
-                        "分钟。下次操作的时间是"+(operatetime+span).ToLongTimeString());
+                    TimeSpan secondspan = TimeSpan.FromSeconds(new Random().Next(0, 59));
+                    span += secondspan;
                     coldtime = span;
+                    ExpConfront(exp);
+                    new Sender().QuicklyReply(group,"成功给出战老婆"+exp+"经验，冷却"+NumToChina(span.Minutes.ToString())+
+                        NumToChina(span.Seconds.ToString())+"。下次操作的时间是" + PrintSuccessTime());                   
                     UpdateToDB();
                 }
                 else
@@ -274,8 +276,8 @@ namespace BotConsole.TouhouPD
             else
             {
                 var rest = coldtime - (DateTime.Now - operatetime);
-                new Sender().QuicklyReply(group, "还在冷却中！还有" + rest.Minutes + "分钟" + rest.Seconds + "秒。" +
-                    "\n冷却完成时间：" + (operatetime + coldtime).ToLongTimeString());
+                new Sender().QuicklyReply(group, "还在冷却中！" +
+                    "\n冷却完成时间：" + PrintSuccessTime());
             }
         }
         public void Beg()
@@ -284,17 +286,19 @@ namespace BotConsole.TouhouPD
             {
                 var money = new Random().Next(500, 800);
                 operatetime = DateTime.Now;
-                TimeSpan span = TimeSpan.FromMinutes(new Random().Next(10, 40));               
-                new Sender().QuicklyReply(group, "成功获得" + money + "円，冷却" + span.Minutes +
-                    "分钟。下次操作的时间是" + (operatetime + span).ToLongTimeString());
+                TimeSpan span = TimeSpan.FromMinutes(new Random().Next(10, 40));
+                TimeSpan secondspan = TimeSpan.FromSeconds(new Random().Next(0, 59));
+                span += secondspan;
                 coldtime = span;
-                GetMoney(money);
+                new Sender().QuicklyReply(group, "成功获得" + money + "円，冷却" + NumToChina(span.Minutes.ToString()) +
+                    NumToChina(span.Seconds.ToString()) + "。下次操作的时间是" + PrintSuccessTime());              
+                GetMoney(money);                
             }
             else
             {
                 var rest = coldtime - (DateTime.Now - operatetime);
-                new Sender().QuicklyReply(group, "还在冷却中！还有" + rest.Minutes + "分钟"+rest.Seconds+"秒。" +
-                    "\n冷却完成时间："+(operatetime+coldtime).ToLongTimeString());
+                new Sender().QuicklyReply(group, "还在冷却中！" +
+                    "\n冷却完成时间："+ PrintSuccessTime());
             }
         }
         public void CollectRub()
@@ -306,6 +310,9 @@ namespace BotConsole.TouhouPD
                 string res = "恭喜你获得了一把";
                 operatetime = DateTime.Now;
                 TimeSpan span = TimeSpan.FromMinutes(new Random().Next(10, 40));
+                TimeSpan secondspan= TimeSpan.FromSeconds(new Random().Next(0, 59));
+                span += secondspan;
+                coldtime = span;
                 if (random<90)
                 {
                     id = EquipFactory.RandomQuality(Equip.Quality.R);
@@ -317,9 +324,9 @@ namespace BotConsole.TouhouPD
                     res += "SR级的";
                 }
                 var equip = EquipFactory.GenerateEquip(id, 1, 0);
-                res += equip.name+"!\n冷却"+span.Minutes+ "分钟。下次操作的时间是" + 
-                    (operatetime + span).ToLongTimeString();
-                coldtime = span;
+                res += equip.name+"!\n冷却"+ NumToChina(span.Minutes.ToString()) + NumToChina(span.Seconds.ToString()) + 
+                    "。下次操作的时间是" +
+                    PrintSuccessTime();               
                 string cmd = string.Format("insert into equipdata (qq,sid,level) values('{0}',{1},1)",qq,id);
                 new DBMgr("erogemanager","a1935515130","botuserdata").Execute(cmd);
                 new Sender().QuicklyReply(group, res);
@@ -328,9 +335,20 @@ namespace BotConsole.TouhouPD
             else
             {
                 var rest = coldtime - (DateTime.Now - operatetime);
-                new Sender().QuicklyReply(group, "还在冷却中！还有" + rest.Minutes + "分钟" + rest.Seconds + "秒。" +
-                    "\n冷却完成时间：" + (operatetime + coldtime).ToLongTimeString());
+                new Sender().QuicklyReply(group, "还在冷却中！" +
+                    "\n冷却完成时间：" + PrintSuccessTime());
             }
+        }
+        public string PrintSuccessTime()
+        {
+            DateTime time = operatetime + coldtime;
+            var year = NumToChina(time.Year.ToString());
+            var month = NumToChina(time.Month.ToString());
+            var day=NumToChina(time.Day.ToString());
+            var hour=NumToChina(time.Hour.ToString());
+            var minute=NumToChina(time.Minute.ToString());
+            var second=NumToChina(time.Second.ToString());
+            return year + month + day + hour + minute + second;
         }
         public void AddEquip(int sid,int level)
         {
@@ -423,5 +441,97 @@ namespace BotConsole.TouhouPD
             }
             return true;
         }
+        #region  数字转汉字
+        public string NumToChina(string num)
+        {
+            if (num.IndexOf(".") == -1)//只有整数部分
+            {
+                if (num.Length > 12)
+                    return "";
+                else
+                    return Part_Int(num);
+            }
+            else
+            {
+                if (num.Length > 14)
+                    return "";
+                else
+                    return Part_Int(num.Split('.')[0]) + Part_Decimal(num.Split('.')[1]);
+            }
+        }
+        public string Part_Int(string A)//整数部分处理
+        {
+            if (string.IsNullOrEmpty(A))
+                return "";
+            string[] Units = new string[] { "", "拾", "佰", "仟", "万", "拾", "佰", "仟", "亿", "拾", "佰", "仟" };//12个量词
+            string A_rev = String.Join("", A.Reverse());
+            string tmp = "";
+            for (int i = A.Length - 1; i >= 0; i--)
+            {
+                tmp += DitoCn(A_rev[i], i) + Units[i];//数字转汉字，并加上量词
+            }
+            return tmp.Replace("零仟", "零").Replace("零佰", "零").Replace("零拾", "零").Replace("零零零#万", "零").Replace("零零零", "零").Replace("零零", "零").Replace("零#", "").Replace("#", "");
+        }
+
+        public string Part_Decimal(string B)//小数部分处理
+        {
+            if (string.IsNullOrEmpty(B))
+                return "";
+            B = B.TrimEnd('0');
+            int lens = B.Length;
+            if (lens == 0 || lens > 2)
+                return "";
+
+            string tmp = "点";
+            for (int i = 0; i < lens; i++)
+                tmp += DitoCn(B[i]);
+            return tmp;
+        }
+        public string DitoCn(char cha, int index = -1)//数字转汉字
+        {
+            string tmp = "";
+            switch (cha)
+            {
+                case '0':
+                    if (index == 0 || index == 4 || index == 8)
+                        tmp = "#";
+                    else
+                        tmp = "零";
+                    break;
+                case '1':
+                    tmp = "壹";
+                    break;
+                case '2':
+                    tmp = "贰";
+                    break;
+                case '3':
+                    tmp = "叁";
+                    break;
+                case '4':
+                    tmp = "肆";
+                    break;
+                case '5':
+                    tmp = "伍";
+                    break;
+                case '6':
+                    tmp = "陆";
+                    break;
+                case '7':
+                    tmp = "柒";
+                    break;
+                case '8':
+                    tmp = "捌";
+                    break;
+                case '9':
+                    tmp = "玖";
+                    break;
+                default:
+                    tmp = cha.ToString();
+                    break;
+            }
+            return tmp;
+        }
+
+        #endregion
     }
 }

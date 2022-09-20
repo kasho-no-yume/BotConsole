@@ -36,7 +36,7 @@ namespace BotConsole.TouhouPD
             }
             res += "输入【查看装备 序号】查看装备详情\n";
             res += "输入【装备 序号】装备上目标装备\n";
-            res += "输入【一键熔铸】将背包里所有未装备的r级装备朝着5级r装备强化";
+            res += "输入【一键熔铸】将背包里所有未装备的r级装备朝着5级r装备强化\n";
             res += "输入【一键熔铸sr】将背包里所有未装备的sr级装备朝着5级sr装备强化(注意小写)";
             new Sender().QuicklyReply(user.group, res);
         }

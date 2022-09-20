@@ -62,7 +62,7 @@ void Commandline()
         string cmd=Console.ReadLine();
         switch(cmd)
         {
-            case "draw":Console.WriteLine(RandomWife.RandomId());
+            case "draw":Console.WriteLine(RandomWife.RandomId(new User("1935515130","")));
                 break;
             case "collect":Console.WriteLine(EquipFactory.RandomQuality(Equip.Quality.R));
                 break;           

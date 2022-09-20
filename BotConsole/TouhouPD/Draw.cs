@@ -16,7 +16,13 @@ namespace BotConsole.TouhouPD
             if (user.money >= cost)
             {
                 user.CostMoney(cost);
-                int rid = RandomWife.RandomId();
+                int rid = RandomWife.RandomId(user);
+                if(rid==-1)
+                {
+                    new Sender().QuicklyReply(user.group, "甚是土豪，所有老婆都拥有且满级了。");
+                    user.GetMoney(cost);
+                    return;
+                }
                 var wife = WifeFactory.GenerateWife(rid, 1);
                 new Sender().QuicklyReply(user.group, "恭喜你抽到了" + wife.name + "!");
                 if (!user.AddWife(rid))
