@@ -78,13 +78,13 @@ namespace BotConsole.TouhouPD
                     }
                     PlayingQQ.Playing(user.qq);
                     var gamer = new GamePlayer(user);
-                    var wife = WifeFactory.GenerateWife(2,levelres);
+                    var wife = WifeFactory.GenerateWife(0,levelres);
                     Equip? equip = null;
                     if(levelres%10==0)
                     {
                         equip= EquipFactory.GenerateEquip(0, ((levelres/10 - 1) / 2) + 1, 0);
                     }
-                    var bot = new GameBot("测试用机器人", wife, equip, new MarisaStra(wife,gamer.wife));
+                    var bot = new GameBot("测试用机器人", wife, equip, new MerryStra(wife,gamer.wife));
                     new BattleRoom(gamer, bot).GameStart();
                 }
                 if (para[1].Equals("custom"))
@@ -140,7 +140,7 @@ namespace BotConsole.TouhouPD
                     {
                         return;
                     }                    
-                    var wife = WifeFactory.GenerateWife(2, 10 * levelres);
+                    var wife = WifeFactory.GenerateWife(0, 10 * levelres);
                     var equip = EquipFactory.GenerateEquip(0, ((levelres - 1) / 2) + 1, 0);
                     if (!user.PowerReduce())
                     {
@@ -149,7 +149,7 @@ namespace BotConsole.TouhouPD
                     }
                     PlayingQQ.Playing(user.qq);
                     var gamer = new GamePlayer(user);
-                    var bot = new GameBot("每日挑战机器人", wife, equip, new MarisaStra(wife,gamer.wife));                   
+                    var bot = new GameBot("每日挑战机器人", wife, equip, new MerryStra(wife,gamer.wife));                   
                     switch (para[1].Substring(0,2))
                     {
                         case "经验":

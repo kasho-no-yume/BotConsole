@@ -27,12 +27,12 @@ namespace BotConsole.TouhouPD.Wife.Wives
             mdefendBase = 35;
             missrateBase = 0;
             hpAddition = 1;
-            mpAddition = 20;
+            mpAddition = 18;
             attackAddition = 0;
-            magicAddition = 3;
+            magicAddition = 2;
             speedAddition = 1;
-            defendAddition = 2;
-            mdefendAddition = 3;
+            defendAddition = 1;
+            mdefendAddition = 2;
             description = "科学世纪的超自然少女？比起科学却跟幻想乡有着朦胧的关系。使用着远超普通人类" +
                 "的力量，但体质却弱于一般水平。";
             skillTitle[0] = "梦与现实的境界";
@@ -168,7 +168,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
                 return 0;
             }
             base.SkillThree(target);
-            double rate = ((maxMpFinal - currentMp) / maxMpFinal*2)+1;
+            double rate = ((maxMpFinal - currentMp) / (double)maxMpFinal*2)+1;
             int damage = currentMagic * 2;
             if(PNN(target))
             {
@@ -178,7 +178,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
             damage = (int)(damage * rate);
             return target.BeingAttack(this,damage,DamageType.magic);
         }
-        private bool PNN(WifeBase enemy)
+        public bool PNN(WifeBase enemy)
         {
             if(enemy.ExistBuff("正粒子")&&enemy.ExistBuff("反粒子"))
             {
