@@ -2,6 +2,7 @@
 using BotConsole.TouhouPD.Wife.Wives.ScarletDevil;
 using BotConsole.TouhouPD.Wife.Wives.HiddenStar;
 using BotConsole.TouhouPD.Wife.Wives.CherryBlossom;
+using BotConsole.TouhouPD.Wife.Wives.DoubleDealing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace BotConsole.TouhouPD.Wife
             id2Name.Add(EternityLarva.sid,typeof(EternityLarva));
             id2Name.Add(Sakata.sid,typeof(Sakata));
             id2Name.Add(KomanoAunn.sid,typeof(KomanoAunn));
-            
+            id2Name.Add(Wakasagihime.sid, typeof(Wakasagihime));
         }
         /// <summary>
         /// 确保不要传不存在的id进来

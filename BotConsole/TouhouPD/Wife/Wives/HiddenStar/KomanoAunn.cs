@@ -32,12 +32,12 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
             maxHpBase = 300;
             hpAddition = 17;
             skillTitle[0] = "守护神兽";
-            skillDescription[0] = "每次当阿哞受到伤害时，都会吸收其中50%的伤害积蓄着。当积蓄的伤害超过最大生命值" +
+            skillDescription[0] = "每次当阿哞受到伤害时，都会吸收其原本伤害的40%积蓄着。当积蓄的伤害超过最大生命值" +
                 "的30%时，会使阿哞的生命值流失该值，并清空积蓄。此伤害不纳入积蓄槽。";
             skillTitle[1] = "阿哞散步";
             skillDescription[1] = "消耗30mp，吟唱0x。回复积蓄伤害量一倍的血量，清空积蓄槽。";
             skillTitle[2] = "狛犬回转";
-            skillDescription[2] = "消耗40mp，吟唱0x。对敌方造成积蓄伤害量两倍的物理伤害，清空积蓄槽。";
+            skillDescription[2] = "消耗40mp，吟唱0x。对敌方造成积蓄伤害量1.25倍的物理伤害，清空积蓄槽。";
             skillTitle[3] = "阿哞呼吸";
             skillDescription[3] = "消耗60mp，吟唱1.5x。三回合内，积蓄伤害没有上限，不会因为超过最大生命值的30%而" +
                 "释放。若在第三回合结束时超过积蓄最大值，则一次释放。冷却5回合。";
@@ -82,14 +82,14 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
         }
         public override int BeingAttack(WifeBase attacker, int damage, DamageType type)
         {
-            accumulate += damage / 2;
+            accumulate += damage *2/5;
             if(accumulate>=maxHpFinal*3/10&&threeRound<=0)
             {
                 battleNotice.Add("阿哞积蓄了过量伤害！");
                 HpReduce(accumulate);
                 accumulate=0;
             }
-            return base.BeingAttack(attacker, damage/2, type);
+            return base.BeingAttack(attacker, damage*3/5, type);
         }
         public override int SkillOne(WifeBase target)
         {
@@ -107,7 +107,7 @@ namespace BotConsole.TouhouPD.Wife.Wives.HiddenStar
             {
                 return 0;
             }
-            int dmg = target.BeingAttack(this, accumulate * 2, DamageType.physical);
+            int dmg = target.BeingAttack(this, accumulate * 5/4, DamageType.physical);
             accumulate = 0;
             return dmg;
         }

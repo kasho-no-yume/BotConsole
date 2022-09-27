@@ -194,7 +194,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         {
             if(filthyGod && currentHp >= maxHpFinal / 5)
             {
-                currentHp -= maxHpFinal / 5;
+                HpReduce( maxHpFinal / 5);
                 filthyGod = !filthyGod;
                 for (int i = target.buffList.Count - 1; i >= 0; i--)
                 {
@@ -228,7 +228,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
             if (filthyGod && currentHp >= maxHpFinal / 5&&gionsamaCold<=0)
             {
                 gionsamaCold = 5;
-                currentHp -= maxHpFinal / 5;
+                HpReduce(maxHpFinal / 5);
                 filthyGod = !filthyGod;
                 gionsama = true;
             }
@@ -250,7 +250,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
             if (filthyGod && currentHp >= maxHpFinal / 5 && amatsumiCold <= 0)
             {
                 amatsumiCold = 5;
-                currentHp -= maxHpFinal / 5;
+                HpReduce(maxHpFinal / 5);
                 filthyGod = !filthyGod;
                 amatsumi += (currentAttack + target.currentAttack) * 4/5;
             }

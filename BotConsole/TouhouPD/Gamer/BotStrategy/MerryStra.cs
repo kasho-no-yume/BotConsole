@@ -28,7 +28,7 @@ namespace BotConsole.TouhouPD.Gamer.BotStrategy
         {
             onecool--;
             twocool--;
-            if(merry.currentMp<=merry.maxMpFinal*2/5)
+            if(merry.currentMp<=merry.maxMpFinal/3)
             {
                 return "defend";
             }

@@ -27,7 +27,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
             mdefendBase = 35;
             missrateBase = 0;
             hpAddition = 1;
-            mpAddition = 18;
+            mpAddition = 22;
             attackAddition = 0;
             magicAddition = 2;
             speedAddition = 1;
@@ -36,22 +36,22 @@ namespace BotConsole.TouhouPD.Wife.Wives
             description = "科学世纪的超自然少女？比起科学却跟幻想乡有着朦胧的关系。使用着远超普通人类" +
                 "的力量，但体质却弱于一般水平。";
             skillTitle[0] = "梦与现实的境界";
-            skillDescription[0] = "梅莉受到伤害时，会用mp量1:1抵消伤害，此外，每回合梅莉回复10%mp。" +
+            skillDescription[0] = "梅莉受到伤害时，会用mp量1:1抵消伤害。" +
                 "梅莉的普通攻击基于法术强度造成伤害。若敌方同时拥有‘正粒子’和‘反粒子’，梅莉" +
                 "下一次攻击（包括技能）造成的伤害翻倍，且给敌方一次一回合眩晕。触发后，所有‘粒子’" +
                 "效果去除。";
             skillTitle[1] = "魅知之旅";
-            skillDescription[1] = "消耗30%mp，吟唱1x。梅莉解除自身所有的负面buff，并给敌方添加" +
+            skillDescription[1] = "消耗当前30%mp，吟唱1x。梅莉解除自身所有的负面buff，并给敌方添加" +
                 "‘正粒子’效果。拥有‘正粒子’效果的敌方会被清除所有正面buff。";
             skillTitle[2] = "月之暗面";
-            skillDescription[2] = "消耗30%mp，吟唱1x。梅莉下一次的释放技能不需要吟唱，并给敌方添加" +
+            skillDescription[2] = "消耗当前30%mp，吟唱1x。梅莉下一次的释放技能不需要吟唱，并给敌方添加" +
                 "‘反粒子’效果。拥有‘反粒子’效果的敌方所有属性降低30%";
             skillTitle[3] = "醉生一梦";
-            skillDescription[3] = "消耗50%mp，吟唱2x。造成两倍法术攻击的伤害，基于已消耗mp的比例" +
+            skillDescription[3] = "消耗当前50%mp，吟唱2x。造成两倍法术攻击的伤害，基于已消耗mp的比例" +
                 "的两倍增加本技能的伤害。";
         }
 
-        public override bool CanUseOne()
+        /*public override bool CanUseOne()
         {
             if(currentMp>=maxMpFinal*3/10)
             {
@@ -74,7 +74,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
                 return true;
             }
             return false;
-        }
+        }*/
         public override double GetChantOne()
         {
             if(darknessMoon)
@@ -133,11 +133,11 @@ namespace BotConsole.TouhouPD.Wife.Wives
         public override void RoundStart(WifeBase enemy)
         {
             base.RoundStart(enemy);
-            MpGet(maxMpFinal / 10);
+            //MpGet(maxMpFinal / 10);
         }
         public override int SkillOne(WifeBase target)
         {
-            if(!MpReduce(maxMpFinal * 3 / 10))
+            if(!MpReduce(currentMp * 3 / 10))
             {
                 return 0;
             }
@@ -153,7 +153,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         }
         public override int SkillTwo(WifeBase target)
         {
-            if(!MpReduce(maxMpFinal * 3 / 10))
+            if(!MpReduce(currentMp * 3 / 10))
             {
                 return 0;
             }
@@ -163,7 +163,7 @@ namespace BotConsole.TouhouPD.Wife.Wives
         }
         public override int SkillThree(WifeBase target)
         {
-            if(!MpReduce(maxMpFinal / 2))
+            if(!MpReduce(currentMp / 2))
             {
                 return 0;
             }
@@ -193,6 +193,21 @@ namespace BotConsole.TouhouPD.Wife.Wives
             string res = darknessMoon ? "月之暗面\n" : "";
             res = base.GetState();
             return res;
+        }
+
+        public override bool CanUseOne()
+        {
+            return true;
+        }
+
+        public override bool CanUseTwo()
+        {
+            return true;
+        }
+
+        public override bool CanUseThree()
+        {
+            return true;
         }
     }
 }

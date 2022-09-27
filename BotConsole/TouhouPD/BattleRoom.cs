@@ -68,6 +68,10 @@ namespace BotConsole.TouhouPD
                     {
                         ProcessAct(one, two, initiator);
                     }
+                    else
+                    {
+                        battleNotice.Add(one.name+"被眩晕，跳过该回合！");
+                    }
                     one.cantActRound--;
                     progressOne += fullProgress;
                 }
@@ -80,6 +84,10 @@ namespace BotConsole.TouhouPD
                     if (two.cantActRound <= 0)
                     {
                         ProcessAct(two, one, receipent);
+                    }
+                    else
+                    {
+                        battleNotice.Add(two.name + "被眩晕，跳过该回合！");
                     }
                     two.cantActRound--;
                     progressTwo += fullProgress;

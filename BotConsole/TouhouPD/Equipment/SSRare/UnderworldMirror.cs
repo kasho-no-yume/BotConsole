@@ -16,7 +16,7 @@ namespace BotConsole.TouhouPD.Equipment.SSRare
             quality = Quality.SSR;
             description = "能够向现世展示异世景色的镜子，其强大且怪异的异能完全无法用任何科学原理解释。也许只有" +
                 "灵力强大到能够突破境界之力的人才能使用。";
-            spellDescription = "装备者额外提高最大法力值10%的法术强度，每回合回复20%法力值。";
+            spellDescription = "装备者额外提高最大法力值10%的法术强度，每回合回复最大10%法力值。";
             extraMpRate = 15;
             extraMagic = 20;
             extraMagicPierceRate = 15;
@@ -29,7 +29,7 @@ namespace BotConsole.TouhouPD.Equipment.SSRare
         }
         private void HealMp(WifeBase self,WifeBase? nobody)
         {
-            self.MpGet(self.maxMpFinal / 5);
+            self.MpGet(self.maxMpFinal / 10);
         }
     }
 }
