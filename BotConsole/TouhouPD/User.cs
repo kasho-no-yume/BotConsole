@@ -264,8 +264,8 @@ namespace BotConsole.TouhouPD
                     span += secondspan;
                     coldtime = span;
                     ExpConfront(exp);
-                    new Sender().QuicklyReply(group,"成功给出战老婆"+exp+"经验，冷却"+NumToChina(span.Minutes.ToString())+
-                        NumToChina(span.Seconds.ToString())+"。下次操作的时间是" + PrintSuccessTime());                   
+                    new Sender().QuicklyReply(group,"成功给出战老婆"+exp+"经验，冷却"+span.ToString()
+                        +"。下次操作的时间是" + PrintSuccessTime());                   
                     UpdateToDB();
                 }
                 else
@@ -290,8 +290,8 @@ namespace BotConsole.TouhouPD
                 TimeSpan secondspan = TimeSpan.FromSeconds(new Random().Next(0, 59));
                 span += secondspan;
                 coldtime = span;
-                new Sender().QuicklyReply(group, "成功获得" + money + "円，冷却" + NumToChina(span.Minutes.ToString()) +
-                    NumToChina(span.Seconds.ToString()) + "。下次操作的时间是" + PrintSuccessTime());              
+                new Sender().QuicklyReply(group, "成功获得" + money + "円，冷却" + span.ToString()
+                    + "。下次操作的时间是" + PrintSuccessTime());              
                 GetMoney(money);                
             }
             else
@@ -324,7 +324,7 @@ namespace BotConsole.TouhouPD
                     res += "SR级的";
                 }
                 var equip = EquipFactory.GenerateEquip(id, 1, 0);
-                res += equip.name+"!\n冷却"+ NumToChina(span.Minutes.ToString()) + NumToChina(span.Seconds.ToString()) + 
+                res += equip.name+"!\n冷却"+ span.ToString() + 
                     "。下次操作的时间是" +
                     PrintSuccessTime();               
                 string cmd = string.Format("insert into equipdata (qq,sid,level) values('{0}',{1},1)",qq,id);
@@ -342,13 +342,13 @@ namespace BotConsole.TouhouPD
         public string PrintSuccessTime()
         {
             DateTime time = operatetime + coldtime;
-            var year = NumToChina(time.Year.ToString());
+            /*var year = NumToChina(time.Year.ToString());
             var month = NumToChina(time.Month.ToString());
             var day=NumToChina(time.Day.ToString());
             var hour=NumToChina(time.Hour.ToString());
             var minute=NumToChina(time.Minute.ToString());
-            var second=NumToChina(time.Second.ToString());
-            return year + month + day + hour + minute + second;
+            var second=NumToChina(time.Second.ToString());*/
+            return time.ToLongTimeString();
         }
         public void AddEquip(int sid,int level)
         {

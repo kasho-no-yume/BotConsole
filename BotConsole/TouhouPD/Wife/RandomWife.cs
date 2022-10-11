@@ -42,7 +42,7 @@ namespace BotConsole.TouhouPD.Wife
         {
             string sqlcmd = "select id from ownedwife where qq='" + user.qq + "' and level=100";
             var reader = new DBMgr("erogemanager","a1935515130","botuserdata").Search(sqlcmd);
-            var tempWeight = wifeWeight;
+            var tempWeight = new Dictionary<int,int>(wifeWeight);
             var tempSum = weightSum;
             while(reader.Read())
             {

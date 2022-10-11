@@ -16,7 +16,7 @@ namespace BotConsole.TouhouPD.Equipment.SSRare
             quality = Quality.SSR;
             description = "传说中奥丁所使用的武器，能够穿透一切。投掷时将划破星空。红魔馆馆主好像也有一把" +
                 "一模一样的。";
-            spellDescription = "嗜血成性的神枪，能够在攻击或者放技能的时候额外减少敌方20%自身攻击力的生命值，" +
+            spellDescription = "嗜血成性的神枪，能够在攻击或者放技能的时候额外减少敌方50%自身攻击力的生命值，" +
                 "并将生命值加到自己身上。";
             extraAtkRate = 20;
             extraAtk = 30;
@@ -28,8 +28,8 @@ namespace BotConsole.TouhouPD.Equipment.SSRare
             if(enemy != null)
             {
                 self.battleNotice.Add("冈格尼尔之枪的特质发动！");
-                enemy.HpReduce(self.currentAttack / 5);
-                self.HpGet(self.currentAttack / 5);
+                enemy.HpReduce(self.currentAttack / 2);
+                self.HpGet(self.currentAttack / 2);
             }           
         }
         public override void Spell(WifeBase wife)
